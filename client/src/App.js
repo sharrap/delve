@@ -85,7 +85,7 @@ function SimpleGenerator(props) {
             </Button>
           </Paper>
         </Grid>
-        <Grid item xs={12} style={{display: result == "" ? "none" : ""}}>
+        <Grid item xs={12} style={{display: result === "" ? "none" : ""}}>
           <Paper className={classes.paper}>
             {result}
           </Paper>
