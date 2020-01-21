@@ -2,7 +2,7 @@
   "scripts": {
     "client": "cd client && yarn start",
     "api": "cd api && yarn start",
-    "dev": "concurrently --kill-others-on-fail 'yarn client' 'yarn api'"
+    "dev": "concurrently -k 'yarn client' 'yarn api'"
   },
   "dependencies": {
     "concurrently": "^5.0.2"
