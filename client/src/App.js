@@ -24,6 +24,8 @@ import BluetoothIcon from '@material-ui/icons/Bluetooth'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
+const axios = require('axios').default;
+
 const useStyles = makeStyles(theme => ({
   menu: {
     "min-width": "200px",
@@ -55,21 +57,15 @@ const useStyles = makeStyles(theme => ({
 function SimpleGenerator(props) {
   const classes = useStyles();
 
-  const hitRoute = async () => {
-    const resp = await fetch('/api/generators/simple');
-    console.log(resp);
-    const body = await resp.json();
-
-    if (resp.status !== 200) throw Error(body.message);
-
-    return body;
-  };
-
   const [ value, setValue ] = React.useState("");
   const [ result, setResult ] = React.useState("");
   const handleChange = event => { setValue(event.target.value); };
 
-  const getResult = () => { hitRoute().then(res => setResult(res.results)).catch(err => console.log(err)); }
+  const getResult = () => {
+    axios.post('/api/generators/simple', {argument: value})
+      .then(res => { if (res.status === 200) { setResult(res.data.results); }
+          else { console.log(res.message); }});
+  };
 
   return (
     <Container className={classes.container}>
