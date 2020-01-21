@@ -55,11 +55,21 @@ const useStyles = makeStyles(theme => ({
 function SimpleGenerator(props) {
   const classes = useStyles();
 
+  const hitRoute = async () => {
+    const resp = await fetch('/api/generators/simple');
+    console.log(resp);
+    const body = await resp.json();
+
+    if (resp.status !== 200) throw Error(body.message);
+
+    return body;
+  };
+
   const [ value, setValue ] = React.useState("");
   const [ result, setResult ] = React.useState("");
   const handleChange = event => { setValue(event.target.value); };
 
-  const getResult = () => { setResult("Example"); }
+  const getResult = () => { hitRoute().then(res => setResult(res.results)).catch(err => console.log(err)); }
 
   return (
     <Container className={classes.container}>
