@@ -10,30 +10,10 @@ import {
 } from 'react-router-dom';
 
 import {
-  AppBar,
-  IconButton,
-  Toolbar,
   Typography
 } from '@material-ui/core';
 
-import {
-  Menu as MenuIcon
-} from '@material-ui/icons';
-
-function Header() {
-  return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" style={{flexGrow: 1}}>
-          <FormattedMessage id="top.titleText" defaultMessage="Delve" />
-        </Typography>
-      </Toolbar>
-    </AppBar>
-  );
-}
+import Navigation from './scenes/Navigation';
 
 function Home() {
   return (
@@ -69,7 +49,7 @@ function App() {
     <IntlProvider>
       <Router>
         <div className="App">
-          <Header />
+          <Navigation />
           <Body />
         </div>
       </Router>
