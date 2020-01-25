@@ -30,17 +30,19 @@ export default class NavDrawer extends React.PureComponent {
   }
 
   render() {
+    const close = () => this.close();
+
     return (
       <Drawer open={this.state.open}
-              ModalProps={{ onBackdropClick: () => this.close() }}>
+              ModalProps={{ onBackdropClick: close }}>
         <List className="NavDrawer">
-          <ListItem button component="a" href="/">
+          <ListItem button component="a" href="/" onClick={close}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button component="a" href="/hexcrawl">
+          <ListItem button component="a" href="/hexcrawl" onClick={close}>
             <ListItemIcon>
               <HexagonMultiple />
             </ListItemIcon>
