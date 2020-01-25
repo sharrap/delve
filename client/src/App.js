@@ -13,15 +13,8 @@ import {
   Typography
 } from '@material-ui/core';
 
+import Home from './scenes/Home';
 import Navigation from './scenes/Navigation';
-
-function Home() {
-  return (
-    <Typography variant="h1">
-      <FormattedMessage id="home.text" defaultMessage="Welcome home!" />
-    </Typography>
-  );
-}
 
 function Hexcrawl() {
   return (
