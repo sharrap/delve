@@ -1,0 +1,18 @@
+.HexcrawlGenerator {
+  height: 100%;
+  padding: 20px 0;
+  background-color: #ddd;
+}
+
+.HexcrawlGeneratorBackground {
+  height: 100%;
+  background-color: #bbb;
+}
+
+.HexcrawlPaper {
+  padding: 0 5px;
+}
+
+.Hexcrawl {
+  height: 100%;
+}
