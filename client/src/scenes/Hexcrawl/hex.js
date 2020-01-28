@@ -1,4 +1,4 @@
-import { terrainColours, terrainTypes } from './terrain';
+import { terrainTypes } from './terrain';
 
 // A hexagon that can be drawn on the screen. Outsources the actual geometry
 // to another class.
@@ -60,7 +60,7 @@ export default class DrawableHex {
         context.lineWidth = 3;
         context.strokeStyle = "black";
       }
-      context.fillStyle = terrainColours[this.features.terrain];
+      context.fillStyle = this.features.terrain.colour;
 
       context.stroke();
       context.fill();
