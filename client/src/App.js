@@ -31,7 +31,7 @@ function Body() {
 
 function App() {
   return (
-    <IntlProvider>
+    <IntlProvider locale="en">
       <Router>
         <div className="App">
           <Navigation />
