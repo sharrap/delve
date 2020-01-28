@@ -15,4 +15,14 @@
 
 .Hexcrawl {
   height: 100%;
+  display: flex;
+  width: 100vw;
+}
+
+.HexcrawlCanvasContainer {
+  width: 100%;
+}
+
+.HexcrawlHexEditor {
+  min-width: 250px;
 }

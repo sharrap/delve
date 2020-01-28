@@ -253,7 +253,12 @@ class Hexcrawl extends React.PureComponent {
   render() {
     return (
       <div className="Hexcrawl">
-        <HexcrawlCanvas />
+        <div className="HexcrawlCanvasContainer">
+          <HexcrawlCanvas />
+        </div>
+        <div className="HexcrawlHexEditor">
+          Hello
+        </div>
       </div>
     );
   }
