@@ -101,17 +101,17 @@ class HexcrawlCanvas extends React.Component {
       this.grid.foregroundHexes.forEach((hex, _) =>
           hex.copyFrom(oldGrid.hexAt(hex.row(), hex.column())));
 
+      if (this.hoveredHex) {
+        this.hoverHex(this.grid.hexAt(
+              this.hoveredHex.row(),
+              this.hoveredHex.column()));
+      }
+
       if (this.clickedHexes) {
         const oldHexes = this.clickedHexes;
         this.clickedHexes = [];
         oldHexes.forEach((hex, _) =>
             this.clickHex(this.grid.hexAt(hex.row(), hex.column()), true));
-      }
-
-      if (this.hoveredHex) {
-        this.hoverHex(this.grid.hexAt(
-              this.hoveredHex.row(),
-              this.hoveredHex.column()));
       }
     }
   }
@@ -146,10 +146,19 @@ class HexcrawlCanvas extends React.Component {
     return null;
   }
 
+
+  drawClickedHexes() {
+    this.clickedHexes.forEach((hex, _) =>
+        hex.draw(this.refs.canvas));
+  }
+
   hoverHex(hex) {
     if (this.hoveredHex) {
       this.hoveredHex.dehighlight(this.refs.canvas);
     }
+
+    this.drawClickedHexes();
+
     this.hoveredHex = hex;
     if (this.hoveredHex) {
       this.hoveredHex.highlight(this.refs.canvas);
