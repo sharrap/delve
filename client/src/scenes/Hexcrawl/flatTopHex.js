@@ -102,15 +102,16 @@ class FlatTopHexGrid {
     const padding = 10; // How many pixels not to draw important hexes on
 
     // The maximum hex radius
-    const maxXRadius = 4/3 * (centre.x + padding) / hexBounds.x;
-    const maxYRadius = (centre.y + padding) / ((hexBounds.y + 1/2) * Math.sin(Math.PI / 3));
+    const maxXRadius = 4/3 * (centre.x - padding) / hexBounds.x;
+    const maxYRadius = (centre.y - padding) /
+      ((hexBounds.y + 1/2) * Math.sin(Math.PI / 3));
     const radius = Math.min(hexRadius, maxXRadius, maxYRadius);
 
     this.dummyHex = new FlatTopHex(0, 0, radius);
 
     const topLeft = {
-      x: centre.x - this.width()/2 + hexBounds.x * 3/4,
-      y: centre.y - this.height()/2 + hexBounds.y
+      x: centre.x - this.width()/2 + this.dummyHex.width()/2,
+      y: centre.y - this.height()/2 + this.dummyHex.height()/2
     };
 
     var i = 0, j = 0;

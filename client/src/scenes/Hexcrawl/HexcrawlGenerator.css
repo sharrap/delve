@@ -17,6 +17,7 @@
   height: 100%;
   display: flex;
   width: 100vw;
+  overflow: hidden;
 }
 
 .HexcrawlCanvasContainer {

@@ -102,9 +102,11 @@ class HexcrawlCanvas extends React.Component {
           hex.copyFrom(oldGrid.hexAt(hex.row(), hex.column())));
 
       if (this.hoveredHex) {
+        const oldHex = this.hoveredHex;
+        this.hoveredHex = null;
         this.hoverHex(this.grid.hexAt(
-              this.hoveredHex.row(),
-              this.hoveredHex.column()));
+              oldHex.row(),
+              oldHex.column()));
       }
 
       if (this.clickedHexes) {
