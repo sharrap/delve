@@ -1,3 +1,5 @@
+import { terrainColours, terrainTypes } from './terrain';
+
 // A hexagon that can be drawn on the screen. Outsources the actual geometry
 // to another class.
 export default class DrawableHex {
@@ -10,6 +12,8 @@ export default class DrawableHex {
 
     this.rowIndex = row;
     this.columnIndex = column;
+
+    this.features = { terrain: terrainTypes[0] };
   }
 
   row() {
@@ -23,6 +27,7 @@ export default class DrawableHex {
   // In the event that the grid was repainted, migrate the data from the old
   // drawable hex in the same position.
   copyFrom(hex) {
+    this.features = hex.features;
   }
 
   draw(canvas) {
@@ -47,16 +52,15 @@ export default class DrawableHex {
     } else {
       if (this.highlighted) {
         context.lineWidth = 2;
+        context.strokeStyle = "blue";
+      } else if (this.clicked) {
+        context.lineWidth = 2;
         context.strokeStyle = "red";
       } else {
         context.lineWidth = 3;
         context.strokeStyle = "black";
       }
-      if (this.clicked) {
-        context.fillStyle = "#eee";
-      } else {
-        context.fillStyle = "#aaa";
-      }
+      context.fillStyle = terrainColours[this.features.terrain];
 
       context.stroke();
       context.fill();
