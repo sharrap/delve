@@ -137,10 +137,10 @@ class HexcrawlCanvas extends React.Component {
         30);
   }
 
-  findContainingHex(x, y) {
-    if (x && y) {
+  findContainingHex(point) {
+    if (point && point.x && point.y) {
       const candidates = this.grid.foregroundHexes.filter(
-          hex => hex.geometry.containsPoint(x, y));
+          hex => hex.geometry.containsPoint(point.x, point.y));
 
       if (candidates.length > 0) return candidates[0];
     }
@@ -175,8 +175,8 @@ class HexcrawlCanvas extends React.Component {
     if (hex) {
       this.clickedHexes.push(hex);
       hex.select(this.refs.canvas);
-      this.props.onClick(hex);
     }
+    this.props.onClick([...this.clickedHexes]);
   }
 
   unclickHex(hex) {
@@ -185,6 +185,7 @@ class HexcrawlCanvas extends React.Component {
           filterHex !== hex);
       hex.deselect(this.refs.canvas);
     }
+    this.props.onClick([...this.clickedHexes.slice]);
   }
 
   mousePosition(evt) {
@@ -204,27 +205,31 @@ class HexcrawlCanvas extends React.Component {
   }
 
   mouseMoved(evt) {
-    const point = this.mousePosition(evt);
-    this.hoverHex(this.findContainingHex(point.x, point.y));
+    if (this.refs.canvas) {
+      const point = this.mousePosition(evt);
+      this.hoverHex(this.findContainingHex(point));
+    }
   }
 
   mouseClicked(evt) {
-    // left click
-    const point = this.mousePosition(evt);
-    if (evt.button === 0) {
-      this.clickHex(
-          this.findContainingHex(point.x, point.y),
-          evt.shiftKey,
-          false);
-    // right click
-    } else if (evt.button === 2) {
-      this.unclickHex(this.findContainingHex(point.x, point.y));
+    if (this.refs.canvas) {
+      // left click
+      const point = this.mousePosition(evt);
+      if (evt.button === 0) {
+        this.clickHex(
+            this.findContainingHex(point),
+            evt.shiftKey,
+            false);
+      // right click
+      } else if (evt.button === 2) {
+        this.unclickHex(this.findContainingHex(point));
+      }
     }
   }
 
   componentDidMount() {
-    this.refs.canvas.oncontextmenu = e => e.preventDefault();
     this.drawCanvas();
+    this.refs.canvas.oncontextmenu = e => e.preventDefault();
     window.addEventListener("resize", () => this.drawCanvas());
     window.addEventListener("mousemove", evt => this.mouseMoved(evt));
     window.addEventListener("mousedown", evt => this.mouseClicked(evt));
@@ -251,16 +256,34 @@ HexcrawlCanvas.defaultProps = {
   onClick: () => null
 };
 
+class HexcrawlHexEditor extends React.PureComponent {
+  state = {
+    hexes: []
+  };
+
+  updateHexes(newHexes) {
+    this.setState(prevState => ({hexes: newHexes}));
+  };
+
+  render() {
+    return (
+      <div className="HexcrawlHexEditor">
+        <Grid>
+        </Grid>
+        { this.state.hexes.map((hex, _) => "(" + hex.row() + ", " + hex.column() + ")").toString(",") }
+      </div>
+    );
+  }
+}
+
 class Hexcrawl extends React.PureComponent {
   render() {
     return (
       <div className="Hexcrawl">
         <div className="HexcrawlCanvasContainer">
-          <HexcrawlCanvas />
+          <HexcrawlCanvas onClick={ clickedHexes => this.refs.hexEditor.updateHexes(clickedHexes) } />
         </div>
-        <div className="HexcrawlHexEditor">
-          Hello
-        </div>
+        <HexcrawlHexEditor ref="hexEditor" />
       </div>
     );
   }
