@@ -176,7 +176,9 @@ class HexcrawlCanvas extends React.Component {
       this.clickedHexes.push(hex);
       hex.select(this.refs.canvas);
     }
-    this.props.onClick([...this.clickedHexes]);
+    if (!multiple || hex) {
+      this.props.onClick([...this.clickedHexes]);
+    }
   }
 
   unclickHex(hex) {
@@ -184,22 +186,25 @@ class HexcrawlCanvas extends React.Component {
       this.clickedHexes = this.clickedHexes.filter((filterHex, _) =>
           filterHex !== hex);
       hex.deselect(this.refs.canvas);
+      this.props.onClick([...this.clickedHexes]);
     }
-    this.props.onClick([...this.clickedHexes.slice]);
   }
 
   mousePosition(evt) {
     if (this.refs && this.refs.canvas) {
       const rect = this.refs.canvas.getBoundingClientRect();
 
-      return {
-        x: (evt.clientX - rect.left) /
-           (rect.right - rect.left) *
-           this.refs.canvas.width,
-        y: (evt.clientY - rect.top) /
-           (rect.bottom - rect.top) *
-           this.refs.canvas.height
-      };
+      if (evt.clientX >= rect.left && evt.clientX <= rect.right
+          && evt.clientY >= rect.top && evt.clientY <= rect.bottom) {
+        return {
+          x: (evt.clientX - rect.left) /
+             (rect.right - rect.left) *
+             this.refs.canvas.width,
+          y: (evt.clientY - rect.top) /
+             (rect.bottom - rect.top) *
+             this.refs.canvas.height
+        };
+      }
     }
     return null;
   }
@@ -215,14 +220,17 @@ class HexcrawlCanvas extends React.Component {
     if (this.refs.canvas) {
       // left click
       const point = this.mousePosition(evt);
-      if (evt.button === 0) {
-        this.clickHex(
-            this.findContainingHex(point),
-            evt.shiftKey,
-            false);
-      // right click
-      } else if (evt.button === 2) {
-        this.unclickHex(this.findContainingHex(point));
+      if (point) {
+        if (evt.button === 0) {
+          console.log(point);
+          this.clickHex(
+              this.findContainingHex(point),
+              evt.shiftKey,
+              false);
+        // right click
+        } else if (evt.button === 2) {
+          this.unclickHex(this.findContainingHex(point));
+        }
       }
     }
   }
