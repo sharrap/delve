@@ -275,11 +275,11 @@ class HexcrawlHexEditor extends React.PureComponent {
 
   render() {
     return (
-      <div className="HexcrawlHexEditor">
+      <Paper className="HexcrawlHexEditor">
         <Grid>
         </Grid>
         { this.state.hexes.map((hex, _) => "(" + hex.row() + ", " + hex.column() + ")").toString(",") }
-      </div>
+      </Paper>
     );
   }
 }
