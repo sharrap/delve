@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FlatTopHexGrid } from './flatTopHex';
 
-export default function HexcrawlCanvas() {
+export default function HexcrawlCanvas(props) {
   const canvas = React.useRef();
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
@@ -24,8 +24,15 @@ export default function HexcrawlCanvas() {
       window.removeEventListener('mousedown', mouseDown);
     };
   }, [canvas, state]);
+  React.useEffect(() => {
+    props.onSelectHexes(state.clickedHexes);
+  }, [state.clickedHexes, props]);
   return <canvas ref={canvas} />;
 }
+
+HexcrawlCanvas.defaultProps = {
+  onSelectHexes: () => {},
+};
 
 const initialState = { hoveredHex: null, clickedHexes: [], grid: null };
 
@@ -58,9 +65,6 @@ function reducer(state, action) {
         newClickedHexes = newClickedHexes.concat([action.hex]);
         action.hex.select(action.canvas);
       }
-      if (!action.multiple || action.hex) {
-        // TODO on click
-      }
       return { ...state, clickedHexes: newClickedHexes };
     case 'DESELECT':
       if (action.hex) {
@@ -73,7 +77,6 @@ function reducer(state, action) {
             ),
           };
         }
-        // TODO on click?
       }
       return state;
     default:

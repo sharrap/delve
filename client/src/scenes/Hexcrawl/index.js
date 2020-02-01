@@ -90,8 +90,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function HexcrawlHexEditor() {
-  const [hexes, setHexes] = React.useState([]);
+function HexcrawlHexEditor(props) {
   const classes = useStyles();
 
   return (
@@ -114,12 +113,14 @@ function HexcrawlHexEditor() {
 }
 
 function Hexcrawl() {
+  const [hexes, setHexes] = React.useState([]);
+
   return (
     <div className="Hexcrawl">
       <div className="HexcrawlCanvasContainer">
-        <HexcrawlCanvas />
+        <HexcrawlCanvas onSelectHexes={hexes => setHexes(hexes)} />
       </div>
-      <HexcrawlHexEditor />
+      <HexcrawlHexEditor hexes={hexes} />
     </div>
   );
 }
