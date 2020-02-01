@@ -4,12 +4,18 @@ import './HexcrawlGenerator.css';
 
 import {
   Container,
+  FormControl,
   Grid,
   Input,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Slider,
   Typography
 } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 import {
   Height as HeightIcon
@@ -264,37 +270,46 @@ HexcrawlCanvas.defaultProps = {
   onClick: () => null
 };
 
-class HexcrawlHexEditor extends React.PureComponent {
-  state = {
-    hexes: []
-  };
-
-  updateHexes(newHexes) {
-    this.setState(prevState => ({hexes: newHexes}));
-  };
-
-  render() {
-    return (
-      <Paper className="HexcrawlHexEditor">
-        <Grid>
-        </Grid>
-        { this.state.hexes.map((hex, _) => "(" + hex.row() + ", " + hex.column() + ")").toString(",") }
-      </Paper>
-    );
+const useStyles = makeStyles(theme => ({
+  formControl: {
+    minWidth: 120
   }
+}));
+
+function HexcrawlHexEditor() {
+  const [ hexes, setHexes ] = React.useState([]);
+  const classes = useStyles();
+
+  return (
+    <Paper className="HexcrawlHexEditor">
+      <Grid container>
+        <Grid item xs={12}>
+          <Typography variant="h4">
+            Hex Editor
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Terrain</InputLabel>
+            <Select>
+              <MenuItem>Plains</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
 }
 
-class Hexcrawl extends React.PureComponent {
-  render() {
-    return (
-      <div className="Hexcrawl">
-        <div className="HexcrawlCanvasContainer">
-          <HexcrawlCanvas onClick={ clickedHexes => this.refs.hexEditor.updateHexes(clickedHexes) } />
-        </div>
-        <HexcrawlHexEditor ref="hexEditor" />
+function Hexcrawl() {
+  return (
+    <div className="Hexcrawl">
+      <div className="HexcrawlCanvasContainer">
+        <HexcrawlCanvas />
       </div>
-    );
-  }
+      <HexcrawlHexEditor />
+    </div>
+  );
 }
 
 export { HexcrawlGenerator, Hexcrawl };
