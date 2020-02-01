@@ -25,6 +25,9 @@ export default function HexcrawlCanvas(props) {
     };
   }, [canvas, state]);
   React.useEffect(() => {
+    canvas.current.oncontextmenu = e => e.preventDefault();
+  }, [canvas]);
+  React.useEffect(() => {
     props.onSelectHexes(state.clickedHexes);
   }, [state.clickedHexes, props]);
   return <canvas ref={canvas} />;
@@ -69,7 +72,7 @@ function reducer(state, action) {
     case 'DESELECT':
       if (action.hex) {
         action.hex.deselect(action.canvas);
-        if (state.clickedHexes.contains(action.hex)) {
+        if (state.clickedHexes.includes(action.hex)) {
           return {
             ...state,
             clickedHexes: state.clickedHexes.filter(
