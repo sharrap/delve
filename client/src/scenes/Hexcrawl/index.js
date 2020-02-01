@@ -12,28 +12,27 @@ import {
   Paper,
   Select,
   Slider,
-  Typography
+  Typography,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  Height as HeightIcon
-} from '@material-ui/icons';
+import { Height as HeightIcon } from '@material-ui/icons';
 
-import HexcrawlCanvas from './components/HexcrawlCanvas'
+import HexcrawlCanvas from './components/HexcrawlCanvas';
 
 class HexcrawlGenerator extends React.PureComponent {
   minValue = 1;
   maxValue = 16;
 
   state = {
-    value: 5
-  }
+    value: 5,
+  };
 
   setValue(newValue) {
-    this.setState(prevState =>
-        ({value: Math.max(this.minValue, Math.min(newValue, this.maxValue))}));
+    this.setState(prevState => ({
+      value: Math.max(this.minValue, Math.min(newValue, this.maxValue)),
+    }));
   }
 
   render() {
@@ -43,31 +42,32 @@ class HexcrawlGenerator extends React.PureComponent {
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} md={3}>
               <Paper className="HexcrawlPaper">
-                <Typography gutterBottom>
-                  Height in hexes
-                </Typography>
+                <Typography gutterBottom>Height in hexes</Typography>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={2}>
                     <HeightIcon />
                   </Grid>
                   <Grid item xs={6}>
-                    <Slider value={this.state.value}
-                            min={this.minValue}
-                            max={this.maxValue}
-                            step={1}
-                            onChange={(event, newValue) =>
-                              this.setValue(newValue)}
-                            />
+                    <Slider
+                      value={this.state.value}
+                      min={this.minValue}
+                      max={this.maxValue}
+                      step={1}
+                      onChange={(event, newValue) => this.setValue(newValue)}
+                    />
                   </Grid>
                   <Grid item xs={4}>
-                    <Input inputProps={{
-                             step: 1,
-                             min:  this.minValue,
-                             max:  this.maxValue,
-                             type: 'number'
-                           }}
-                           onChange={event => this.setValue(event.target.value)}
-                           margin="dense" value={this.state.value} />
+                    <Input
+                      inputProps={{
+                        step: 1,
+                        min: this.minValue,
+                        max: this.maxValue,
+                        type: 'number',
+                      }}
+                      onChange={event => this.setValue(event.target.value)}
+                      margin="dense"
+                      value={this.state.value}
+                    />
                   </Grid>
                 </Grid>
               </Paper>
@@ -86,21 +86,19 @@ class HexcrawlGenerator extends React.PureComponent {
 
 const useStyles = makeStyles(theme => ({
   formControl: {
-    minWidth: 120
-  }
+    minWidth: 120,
+  },
 }));
 
 function HexcrawlHexEditor() {
-  const [ hexes, setHexes ] = React.useState([]);
+  const [hexes, setHexes] = React.useState([]);
   const classes = useStyles();
 
   return (
     <Paper className="HexcrawlHexEditor">
       <Grid container>
         <Grid item xs={12}>
-          <Typography variant="h4">
-            Hex Editor
-          </Typography>
+          <Typography variant="h4">Hex Editor</Typography>
         </Grid>
         <Grid item xs={12}>
           <FormControl className={classes.formControl}>
