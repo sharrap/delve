@@ -9,9 +9,26 @@ import {
   Switch
 } from 'react-router-dom';
 
+import {
+  createMuiTheme,
+  ThemeProvider
+} from '@material-ui/core/styles';
+
+import { grey, purple, red } from '@material-ui/core/colors';
+
 import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: purple,
+    secondary: red,
+    background: {
+      paper: grey[500]
+    }
+  }
+});
 
 function Body() {
   return (
@@ -32,12 +49,14 @@ function Body() {
 function App() {
   return (
     <IntlProvider locale="en">
-      <Router>
-        <div className="App">
-          <Navigation />
-          <Body />
-        </div>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <div className="App">
+            <Navigation />
+            <Body />
+          </div>
+        </Router>
+      </ThemeProvider>
     </IntlProvider>
   );
 }
