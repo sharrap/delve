@@ -85,6 +85,12 @@ class HexcrawlGenerator extends React.PureComponent {
 }
 
 const useStyles = makeStyles(theme => ({
+  title: {
+    paddingTop: 20,
+  },
+  hexEditorWindow: {
+    width: '400px',
+  },
   formControl: {
     minWidth: 120,
   },
@@ -94,10 +100,12 @@ function HexcrawlHexEditor(props) {
   const classes = useStyles();
 
   return (
-    <Paper className="HexcrawlHexEditor">
+    <Paper className={classes.hexEditorWindow}>
       <Grid container>
         <Grid item xs={12}>
-          <Typography variant="h4">Hex Editor</Typography>
+          <Typography variant="h4" className={classes.title}>
+            Hex Editor
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <FormControl className={classes.formControl}>
