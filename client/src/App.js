@@ -3,16 +3,9 @@ import './App.css';
 
 import { IntlProvider } from 'react-intl';
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import {
-  createMuiTheme,
-  ThemeProvider
-} from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import { grey, purple, red } from '@material-ui/core/colors';
 
@@ -24,10 +17,10 @@ const theme = createMuiTheme({
   palette: {
     primary: purple,
     secondary: red,
-    background: {
-      paper: grey[500]
-    }
-  }
+    // background: {
+    //   paper: grey[500]
+    // }
+  },
 });
 
 function Body() {
