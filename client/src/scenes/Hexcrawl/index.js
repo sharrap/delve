@@ -14,6 +14,12 @@ import {
   Paper,
   Select,
   Slider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from '@material-ui/core';
 
@@ -99,12 +105,6 @@ const useStyles = makeStyles(theme => ({
   sidebarSection: {
     padding: '5px 0',
   },
-  gridColour1: {
-    backgroundColor: grey[0],
-  },
-  gridColour2: {
-    backgroundColor: grey[100],
-  },
 }));
 
 function GridColour(props) {
@@ -114,10 +114,10 @@ function GridColour(props) {
     <React.Fragment>
       {props.children.map((component, index) =>
         React.cloneElement(component, {
-          className:
-            component.props.className +
-            ' ' +
-            (index % 2 == 0 ? classes.gridColour1 : classes.gridColour2),
+          style: {
+            ...component.props.style,
+            backgroundColor: index % 2 === 0 ? props.color1 : props.color2,
+          },
         })
       )}
     </React.Fragment>
@@ -129,10 +129,10 @@ function HexcrawlHexEditor(props) {
 
   return (
     <Paper square variant="outlined" className={classes.hexEditorWindow}>
-      <GridColour>
+      <GridColour color1={grey[0]} color2={grey[100]}>
         <Paper square variant="outlined" className={classes.sidebarSection}>
           <Typography variant="h4" className={classes.title}>
-            Hex Editor
+            Hex Viewer
           </Typography>
         </Paper>
         <Paper square variant="outlined" className={classes.sidebarSection}>
@@ -145,6 +145,41 @@ function HexcrawlHexEditor(props) {
         </Paper>
         <Paper square variant="outlined" className={classes.sidebarSection}>
           <Typography variant="h6">Known Points of Interest</Typography>
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Type</TableCell>
+                  <TableCell>Position</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <GridColour color1={grey[500]} color2={grey[700]}>
+                  <TableRow hover>
+                    <TableCell>Bagwell Tower</TableCell>
+                    <TableCell>Tower</TableCell>
+                    <TableCell>Road</TableCell>
+                  </TableRow>
+                  <TableRow hover>
+                    <TableCell>Moria</TableCell>
+                    <TableCell>Mine</TableCell>
+                    <TableCell>River</TableCell>
+                  </TableRow>
+                  <TableRow hover>
+                    <TableCell>Isengard</TableCell>
+                    <TableCell>Tower</TableCell>
+                    <TableCell>River, Road</TableCell>
+                  </TableRow>
+                  <TableRow hover>
+                    <TableCell>Weathertop</TableCell>
+                    <TableCell>Ruin</TableCell>
+                    <TableCell>Wilderness</TableCell>
+                  </TableRow>
+                </GridColour>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Paper>
         <Paper square variant="outlined" className={classes.sidebarSection}>
           <Typography variant="h6">Unique Random Encounters</Typography>
