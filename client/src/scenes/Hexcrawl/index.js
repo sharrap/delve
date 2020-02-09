@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { grey } from '@material-ui/core/colors';
+
 import './HexcrawlGenerator.css';
 
 import {
@@ -90,6 +92,7 @@ const useStyles = makeStyles(theme => ({
   },
   hexEditorWindow: {
     width: '400px',
+    backgroundColor: grey[500],
   },
   formControl: {
     minWidth: 120,
@@ -100,23 +103,40 @@ function HexcrawlHexEditor(props) {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.hexEditorWindow}>
-      <Grid container>
+    <Container className={classes.hexEditorWindow}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h4" className={classes.title}>
             Hex Editor
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <FormControl className={classes.formControl}>
-            <InputLabel>Terrain</InputLabel>
-            <Select>
-              <MenuItem>Plains</MenuItem>
-            </Select>
-          </FormControl>
+          <Paper>
+            <FormControl className={classes.formControl}>
+              <InputLabel>Terrain</InputLabel>
+              <Select>
+                <MenuItem>Plains</MenuItem>
+              </Select>
+            </FormControl>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper>
+            <Typography variant="h6">Known Points of Interest</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper>
+            <Typography variant="h6">Unique Random Encounters</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper>
+            <Typography variant="h6">Repeatable Random Encounters</Typography>
+          </Paper>
         </Grid>
       </Grid>
-    </Paper>
+    </Container>
   );
 }
 
