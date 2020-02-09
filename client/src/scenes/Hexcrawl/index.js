@@ -92,51 +92,68 @@ const useStyles = makeStyles(theme => ({
   },
   hexEditorWindow: {
     width: '400px',
-    backgroundColor: grey[500],
   },
   formControl: {
     minWidth: 120,
   },
+  sidebarSection: {
+    padding: '5px 0',
+  },
+  gridColour1: {
+    backgroundColor: grey[0],
+  },
+  gridColour2: {
+    backgroundColor: grey[100],
+  },
 }));
+
+function GridColour(props) {
+  const classes = useStyles();
+
+  return (
+    <React.Fragment>
+      {props.children.map((component, index) =>
+        React.cloneElement(component, {
+          className:
+            component.props.className +
+            ' ' +
+            (index % 2 == 0 ? classes.gridColour1 : classes.gridColour2),
+        })
+      )}
+    </React.Fragment>
+  );
+}
 
 function HexcrawlHexEditor(props) {
   const classes = useStyles();
 
   return (
-    <Container className={classes.hexEditorWindow}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+    <Paper square variant="outlined" className={classes.hexEditorWindow}>
+      <GridColour>
+        <Paper square variant="outlined" className={classes.sidebarSection}>
           <Typography variant="h4" className={classes.title}>
             Hex Editor
           </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper>
-            <FormControl className={classes.formControl}>
-              <InputLabel>Terrain</InputLabel>
-              <Select>
-                <MenuItem>Plains</MenuItem>
-              </Select>
-            </FormControl>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper>
-            <Typography variant="h6">Known Points of Interest</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper>
-            <Typography variant="h6">Unique Random Encounters</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper>
-            <Typography variant="h6">Repeatable Random Encounters</Typography>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Container>
+        </Paper>
+        <Paper square variant="outlined" className={classes.sidebarSection}>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Terrain</InputLabel>
+            <Select>
+              <MenuItem>Plains</MenuItem>
+            </Select>
+          </FormControl>
+        </Paper>
+        <Paper square variant="outlined" className={classes.sidebarSection}>
+          <Typography variant="h6">Known Points of Interest</Typography>
+        </Paper>
+        <Paper square variant="outlined" className={classes.sidebarSection}>
+          <Typography variant="h6">Unique Random Encounters</Typography>
+        </Paper>
+        <Paper square variant="outlined" className={classes.sidebarSection}>
+          <Typography variant="h6">Repeatable Random Encounters</Typography>
+        </Paper>
+      </GridColour>
+    </Paper>
   );
 }
 
@@ -145,9 +162,7 @@ function Hexcrawl() {
 
   return (
     <div className="Hexcrawl">
-      <div className="HexcrawlCanvasContainer">
-        <HexcrawlCanvas onSelectHexes={hexes => setHexes(hexes)} />
-      </div>
+      <HexcrawlCanvas onSelectHexes={hexes => setHexes(hexes)} />
       <HexcrawlHexEditor hexes={hexes} />
     </div>
   );
