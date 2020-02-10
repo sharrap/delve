@@ -2,7 +2,9 @@
   "scripts": {
     "client": "cd client && yarn start",
     "api": "cd api && yarn start",
-    "dev": "concurrently -k 'yarn client' 'yarn api'"
+    "dev": "concurrently -k 'yarn client' 'yarn api'",
+    "docker": "cd docker && ./start.sh",
+    "migrate": "cd db && ./migrate.sh"
   },
   "dependencies": {
     "concurrently": "^5.0.2"
