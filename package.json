@@ -1,8 +1,8 @@
 {
   "scripts": {
     "client": "cd client && yarn start",
-    "api": "cd api && yarn start",
-    "dev": "concurrently -k 'yarn client' 'yarn api'",
+    "backend": "cd backend && yarn start",
+    "dev": "concurrently -k 'yarn client' 'yarn backend'",
     "docker": "cd docker && ./start.sh",
     "migrate": "cd db && node ../node_modules/db-migrate/bin/db-migrate"
   },
