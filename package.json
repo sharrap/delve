@@ -4,9 +4,14 @@
     "api": "cd api && yarn start",
     "dev": "concurrently -k 'yarn client' 'yarn api'",
     "docker": "cd docker && ./start.sh",
-    "migrate": "cd db && ./migrate.sh"
+    "migrate": "cd db && node ../node_modules/db-migrate/bin/db-migrate"
   },
   "dependencies": {
-    "concurrently": "^5.0.2"
+    "concurrently": "^5.0.2",
+    "db-migrate": "^0.11.6",
+    "db-migrate-pg": "^1.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1"
   }
 }
