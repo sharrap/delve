@@ -7,11 +7,12 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
-import { grey, purple, red } from '@material-ui/core/colors';
+import { purple, red } from '@material-ui/core/colors';
 
 import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
+import Register from './scenes/Register';
 
 const theme = createMuiTheme({
   palette: {
@@ -31,6 +32,9 @@ function Body() {
       </Route>
       <Route path="/hexcrawl">
         <Hexcrawl />
+      </Route>
+      <Route path="/register">
+        <Register />
       </Route>
       <Route path="/">
         <Home />

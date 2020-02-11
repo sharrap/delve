@@ -1,0 +1,244 @@
+import React from 'react';
+
+import zxcvbn from 'zxcvbn';
+
+import {
+  Avatar,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+  LinearProgress,
+  TextField,
+  Typography,
+} from '@material-ui/core';
+
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
+import { green, grey, red, yellow } from '@material-ui/core/colors';
+
+import {
+  LockOutlined as LockOutlinedIcon,
+  VisibilityOff as VisibilityOffIcon,
+  Visibility as VisibilityOnIcon,
+} from '@material-ui/icons';
+
+import { validate } from 'email-validator';
+
+const useStyles = makeStyles(theme => ({
+  form: {
+    width: '100%',
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  progressContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}));
+
+const styledBy = (property, mapping) => props => mapping[props[property]];
+
+const ColoredProgressBar = withStyles({
+  colorPrimary: {
+    backgroundColor: grey[300],
+  },
+  barColorPrimary: {
+    backgroundColor: styledBy('barColor', {
+      red: red[800],
+      yellow: yellow[800],
+      green: green[500],
+      darkgreen: green[800],
+      default: grey[300],
+    }),
+  },
+})(({ barColor, ...other }) => <LinearProgress {...other} />);
+
+function passwordTooWeak(strength) {
+  return strength < 1;
+}
+
+function ColouredProgress(props) {
+  const classes = useStyles();
+
+  let color, text;
+
+  switch (props.strength) {
+    case 4:
+      color = 'darkgreen';
+      text = 'Excellent';
+      break;
+    case 3:
+      color = 'green';
+      text = 'Strong';
+      break;
+    case 2:
+      color = 'yellow';
+      text = 'Decent';
+      break;
+    case 1:
+      color = 'red';
+      text = 'Weak';
+      break;
+    case 0:
+      color = 'grey';
+      text = 'Too Weak';
+      break;
+    default:
+      color = 'grey';
+      text = 'Unknown';
+  }
+
+  return (
+    <div className={classes.progressContainer}>
+      <Typography
+        align="left"
+        variant="caption"
+        color={passwordTooWeak(props.strength) ? 'error' : 'textPrimary'}
+        gutterBottom
+      >
+        Password Strength:
+        <strong>{' ' + text}</strong>
+      </Typography>
+      <ColoredProgressBar
+        variant="determinate"
+        value={Math.max(props.strength, 0) * 25}
+        barColor={color}
+      />
+    </div>
+  );
+}
+
+export default function Register() {
+  const classes = useStyles();
+
+  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
+
+  const [passwordStrength, setPasswordStrength] = React.useState(-1);
+  // const [passwordWarning, setPasswordWarning] = React.useState('');
+  // const [passwordSuggestions, setPasswordSuggestions] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!password || password === '') {
+      setPasswordStrength(-1);
+      // setPasswordWarning('');
+      // setPasswordSuggestions([]);
+    } else {
+      const { score, feedback } = zxcvbn(password);
+      setPasswordStrength(score);
+      // setPasswordWarning(feedback.warning);
+      // setPasswordSuggestions(feedback.suggestions);
+    }
+  }, [password]);
+
+  return (
+    <Container maxWidth="xs">
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <form
+          className={classes.form}
+          noValidate
+          action="/user/signup"
+          method="post"
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="uname"
+                name="username"
+                variant="outlined"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                autoFocus
+                value={username}
+                onChange={evt => setUsername(evt.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="email"
+                name="email"
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                value={email}
+                onChange={evt => setEmail(evt.target.value)}
+                error={!validate(email)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="current-password"
+                name="password"
+                variant="outlined"
+                required
+                fullWidth
+                id="password"
+                error={passwordStrength < 2}
+                type={passwordVisible ? 'text' : 'password'}
+                label="Password"
+                onChange={evt => setPassword(evt.target.value)}
+                value={password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                      >
+                        {passwordVisible ? (
+                          <VisibilityOnIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ColouredProgress strength={passwordStrength} />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            disabled={
+              passwordTooWeak(passwordStrength) ||
+              !validate(email) ||
+              username === ''
+            }
+            className={classes.submit}
+          >
+            Register
+          </Button>
+        </form>
+      </div>
+    </Container>
+  );
+}
