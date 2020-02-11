@@ -7,22 +7,18 @@ import {
   Button,
   Container,
   Grid,
-  IconButton,
-  InputAdornment,
   LinearProgress,
   TextField,
   Typography,
 } from '@material-ui/core';
 
+import PasswordField from '../../components/PasswordField';
+
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { green, grey, red, yellow } from '@material-ui/core/colors';
 
-import {
-  LockOutlined as LockOutlinedIcon,
-  VisibilityOff as VisibilityOffIcon,
-  Visibility as VisibilityOnIcon,
-} from '@material-ui/icons';
+import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 
 import { validate } from 'email-validator';
 
@@ -128,7 +124,6 @@ export default function Register() {
   const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   const [passwordStrength, setPasswordStrength] = React.useState(-1);
   // const [passwordWarning, setPasswordWarning] = React.useState('');
@@ -189,7 +184,7 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              <PasswordField
                 autoComplete="current-password"
                 name="password"
                 variant="outlined"
@@ -197,26 +192,9 @@ export default function Register() {
                 fullWidth
                 id="password"
                 error={passwordStrength < 2}
-                type={passwordVisible ? 'text' : 'password'}
                 label="Password"
                 onChange={evt => setPassword(evt.target.value)}
                 value={password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setPasswordVisible(!passwordVisible)}
-                      >
-                        {passwordVisible ? (
-                          <VisibilityOnIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
               />
             </Grid>
             <Grid item xs={12}>
