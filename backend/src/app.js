@@ -1,37 +1,74 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import express from 'express';
+import createError from 'http-errors';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import session from 'express-session';
+import database from './db/index.js';
+import dbUser from './db/user.js';
+import userRoutes from './routes/user.js';
+import initPassport from './authentication/init.js';
+import securePasswordConfig from 'secure-password';
+import passport from 'passport';
+import redis from 'redis';
+import RedisServer from 'redis-server';
+import connectRedis from 'connect-redis';
 
-const simpleGeneratorRouter = require('./routes/simple_generator')
+const app = express();
 
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+const redisServer = new RedisServer({
+  port: 6379,
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+redisServer.open().then(() => {
+  process.on('exit', () => redisServer.close());
+  const redisClient = redis.createClient();
+  const RedisStore = connectRedis(session);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  const __dirname = path.resolve();
+
+  const sess = {
+    store: new RedisStore({ client: redisClient }),
+    secret: 'example secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      sameSite: 'lax',
+      secure: false, //FIXME
+    },
+  };
+
+  const db = database();
+  const passwordConfig = securePasswordConfig();
+  const User = dbUser(db, passwordConfig);
+  initPassport(passwordConfig, User, redisClient);
+
+  app.use(logger('dev'));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cookieParser());
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(session(sess));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.use('/user', userRoutes(User));
+
+  // catch 404 and forward to error handler
+  app.use(function(req, res, next) {
+    next(createError(404));
+  });
+
+  // error handler
+  app.use(function(err, req, res) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+  });
 });
 
-module.exports = app;
+export default app;

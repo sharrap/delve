@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var dbm;
 var type;
@@ -16,31 +16,32 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   db.createTable(
-    "users",
+    'users',
     {
-      user_id: {
-        type: "int",
+      id: {
+        type: 'int',
         autoIncrement: true,
         notNull: true,
-        primaryKey: true
+        unsigned: true,
+        primaryKey: true,
       },
-      user_email: { type: "text", notNull: true, unique: true },
-      encoded_password: { type: "text", notNull: true },
-      activated: { type: "boolean", defaultValue: "false", notNull: true },
+      email: { type: 'text', notNull: true, unique: true },
+      hashed_password: { type: 'text', notNull: true },
+      activated: { type: 'boolean', defaultValue: 'false', notNull: true },
       signup_ts: {
-        type: "timestamptz",
-        defaultValue: new String("current_timestamp"),
-        notNull: true
-      }
+        type: 'timestamptz',
+        defaultValue: new String('current_timestamp'),
+        notNull: true,
+      },
     },
     callback
   );
 };
 
 exports.down = function(db, callback) {
-  db.dropTable("users", callback);
+  db.dropTable('users', callback);
 };
 
 exports._meta = {
-  version: 1
+  version: 1,
 };
