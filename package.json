@@ -9,9 +9,13 @@
   "dependencies": {
     "concurrently": "^5.0.2",
     "db-migrate": "^0.11.6",
-    "db-migrate-pg": "^1.0.0"
+    "db-migrate-pg": "^1.0.0",
+    "typescript": "^3.7.5"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.19.2",
+    "@typescript-eslint/parser": "^2.19.2",
+    "eslint": "^6.8.0",
     "prettier": "^1.19.1"
   }
 }
