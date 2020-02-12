@@ -24,8 +24,7 @@ exports.up = function(db, callback) {
         notNull: true,
         primaryKey: true
       },
-      user_name: { type: "text", notNull: true },
-      user_email: { type: "text", notNull: true },
+      user_email: { type: "text", notNull: true, unique: true },
       encoded_password: { type: "text", notNull: true },
       activated: { type: "boolean", defaultValue: "false", notNull: true },
       signup_ts: {

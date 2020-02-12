@@ -121,24 +121,17 @@ function ColouredProgress(props) {
 export default function Register() {
   const classes = useStyles();
 
-  const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   const [passwordStrength, setPasswordStrength] = React.useState(-1);
-  // const [passwordWarning, setPasswordWarning] = React.useState('');
-  // const [passwordSuggestions, setPasswordSuggestions] = React.useState([]);
 
   React.useEffect(() => {
     if (!password || password === '') {
       setPasswordStrength(-1);
-      // setPasswordWarning('');
-      // setPasswordSuggestions([]);
     } else {
-      const { score, feedback } = zxcvbn(password);
+      const { score } = zxcvbn(password);
       setPasswordStrength(score);
-      // setPasswordWarning(feedback.warning);
-      // setPasswordSuggestions(feedback.suggestions);
     }
   }, [password]);
 
@@ -155,20 +148,6 @@ export default function Register() {
           method="post"
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="uname"
-                name="username"
-                variant="outlined"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                autoFocus
-                value={username}
-                onChange={evt => setUsername(evt.target.value)}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 autoComplete="email"
@@ -206,11 +185,7 @@ export default function Register() {
             fullWidth
             variant="contained"
             color="primary"
-            disabled={
-              passwordTooWeak(passwordStrength) ||
-              !validate(email) ||
-              username === ''
-            }
+            disabled={passwordTooWeak(passwordStrength) || !validate(email)}
             className={classes.submit}
           >
             Register
