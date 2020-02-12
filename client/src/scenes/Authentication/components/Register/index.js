@@ -134,6 +134,17 @@ export default function Register() {
 
   const passwordStrength = password ? zxcvbn(password).score : -1;
 
+  const [badEmail, setBadEmail] = React.useState(false);
+  const [badPassword, setBadPassword] = React.useState(false);
+
+  function validateEmail() {
+    setBadEmail(!validate(email));
+  }
+
+  function validatePassword() {
+    setBadPassword(passwordTooWeak(passwordStrength));
+  }
+
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
@@ -159,9 +170,11 @@ export default function Register() {
                 fullWidth
                 id="email"
                 label="Email Address"
-                value={email}
                 onChange={evt => setEmail(evt.target.value)}
-                error={!validate(email)}
+                onBlur={validateEmail}
+                onFocus={() => setBadEmail(false)}
+                value={email}
+                error={badEmail}
               />
             </Grid>
             <Grid item xs={12}>
@@ -172,10 +185,12 @@ export default function Register() {
                 required
                 fullWidth
                 id="password"
-                error={passwordStrength < 2}
                 label="Password"
                 onChange={evt => setPassword(evt.target.value)}
+                onBlur={validatePassword}
+                onFocus={() => setBadPassword(false)}
                 value={password}
+                error={badPassword}
               />
             </Grid>
             <Grid item xs={12}>

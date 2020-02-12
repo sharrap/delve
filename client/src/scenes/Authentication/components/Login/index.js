@@ -48,6 +48,17 @@ export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
+  const [badEmail, setBadEmail] = React.useState(false);
+  const [badPassword, setBadPassword] = React.useState(false);
+
+  function validateEmail() {
+    setBadEmail(!validate(email));
+  }
+
+  function validatePassword() {
+    setBadPassword(!password);
+  }
+
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
@@ -73,9 +84,11 @@ export default function Login() {
                 fullWidth
                 id="email"
                 label="Email Address"
-                value={email}
                 onChange={evt => setEmail(evt.target.value)}
-                error={!validate(email)}
+                onBlur={validateEmail}
+                onFocus={() => setBadEmail(false)}
+                value={email}
+                error={badEmail}
               />
             </Grid>
             <Grid item xs={12}>
@@ -87,22 +100,22 @@ export default function Login() {
                 fullWidth
                 id="password"
                 label="Password"
-                error={!password}
                 onChange={evt => setPassword(evt.target.value)}
+                onBlur={validatePassword}
+                onFocus={() => setBadPassword(false)}
                 value={password}
+                error={badPassword}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Grid container>
-                <Grid item>
-                  <FormControlLabel
-                    control={<Checkbox value="rememberMe" color="primary" />}
-                    label="Stay signed in"
-                  />
-                </Grid>
-                <Grid item xs />
-              </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item>
+              <FormControlLabel
+                control={<Checkbox value="rememberMe" color="primary" />}
+                label="Stay signed in"
+              />
             </Grid>
+            <Grid item xs />
           </Grid>
           <Button
             fullWidth
