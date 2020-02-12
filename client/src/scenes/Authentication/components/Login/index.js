@@ -3,10 +3,13 @@ import React from 'react';
 import {
   Avatar,
   Button,
+  Checkbox,
   Container,
+  FormControlLabel,
   Grid,
   Link,
   TextField,
+  Typography,
 } from '@material-ui/core';
 
 import { Link as RouterLink } from 'react-router-dom';
@@ -21,6 +24,7 @@ import { validate } from 'email-validator';
 
 const useStyles = makeStyles(theme => ({
   form: {
+    marginTop: theme.spacing(1),
     width: '100%',
   },
   paper: {
@@ -36,11 +40,6 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  progressContainer: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
 }));
 
 export default function Login() {
@@ -55,6 +54,9 @@ export default function Login() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign In
+        </Typography>
         <form
           className={classes.form}
           noValidate
@@ -89,6 +91,17 @@ export default function Login() {
                 onChange={evt => setPassword(evt.target.value)}
                 value={password}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container>
+                <Grid item>
+                  <FormControlLabel
+                    control={<Checkbox value="rememberMe" color="primary" />}
+                    label="Stay signed in"
+                  />
+                </Grid>
+                <Grid item xs />
+              </Grid>
             </Grid>
           </Grid>
           <Button
