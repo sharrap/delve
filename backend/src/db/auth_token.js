@@ -35,10 +35,10 @@ export default function(db) {
       .digest('hex');
 
     await db.query(
-      'INSERT INTO auth_tokens \
-    (selector, hashed_validator, user_id, expires_ts) \
-    VALUES ($1, $2, $3, current_timestamp + $4::interval);',
-      [selector, hashedValidator, userId, duration + ' milliseconds']
+      "INSERT INTO auth_tokens \
+    (selector, hashed_validator, user_id, expires_ts) VALUES \
+    ($1, $2, $3, current_timestamp + $4::int * '1 millisecond'::interval);",
+      [selector, hashedValidator, userId, duration]
     );
   }
 

@@ -3,24 +3,36 @@ import passport from 'passport';
 
 const router = express.Router();
 
-export default function(User) {
+export default function(AuthToken, User) {
   router.post('/ping', (req, res) => {
     res.send({
       ping: 'ping',
-      userId: req.session.passport.user,
+      userId: req.session.passport && req.session.passport.user,
       user: req.user,
     });
   });
   router.post('/signout', (req, res) => {
+    if (req.cookies.rememberMe) {
+      AuthToken.clear(req.cookies.rememberMe).catch(() => {});
+      res.clearCookie('rememberMe');
+    }
     req.logout();
     res.status(200).send();
   });
   router.post('/signin', passport.authenticate('local'), (req, res) => {
-    if (req.isAuthenticated()) {
-      res.status(200).send();
-    } else {
-      res.status(401).send();
-    }
+    if (!req.isAuthenticated()) return res.status(401).send();
+
+    if (!req.body.rememberMe) return res.status(200).send();
+
+    AuthToken.grant(req.user)
+      .then(token => {
+        res.cookie('rememberMe', token, AuthToken.cookie);
+        res.status(200).send();
+      })
+      .catch(err => {
+        console.log('Could not set rememberMe cookie: ' + err);
+        res.status(500).send();
+      });
   });
   router.post('/signup', (req, res) => {
     const { email, password } = req.body;

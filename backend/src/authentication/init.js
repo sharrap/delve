@@ -1,8 +1,14 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
+import RememberMeStrategy from 'passport-remember-me/lib/strategy.js';
 import SecurePassword from 'secure-password';
 
-export default function initPassport(passwordConfig, User, redisClient) {
+export default function initPassport(
+  passwordConfig,
+  redisClient,
+  User,
+  AuthToken
+) {
   function rehashPassword(id, password) {
     redisClient.sismember('rehashingUsers', id, (err, reply) => {
       if (!err && !reply) {
@@ -57,6 +63,38 @@ export default function initPassport(passwordConfig, User, redisClient) {
         verifyUser(email, password)
           .then(user => done(null, user))
           .catch(() => done(null, false));
+      }
+    )
+  );
+  const tokenDuration = 604800000; // 7 days
+  passport.use(
+    new RememberMeStrategy(
+      {
+        key: 'rememberMe',
+        cookie: {
+          path: '/',
+          httpOnly: true,
+          maxAge: tokenDuration,
+        },
+      },
+      (token, done) => {
+        AuthToken.authorize(token)
+          .then(user => {
+            done(null, user || false);
+          })
+          .catch(() =>
+            done({
+              status: 500,
+              message: 'Could not authorize rememberMe token',
+            })
+          );
+      },
+      (user, done) => {
+        AuthToken.grant(user)
+          .then(token => done(null, token))
+          .catch(() =>
+            done({ status: 500, message: 'Could not refresh rememberMe token' })
+          );
       }
     )
   );

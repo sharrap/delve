@@ -6,6 +6,8 @@ import logger from 'morgan';
 import session from 'express-session';
 import database from './db/index.js';
 import dbUser from './db/user.js';
+import dbAuthToken from './db/auth_token.js';
+import AuthTokenProvider from './authentication/token.js';
 import userRoutes from './routes/user.js';
 import initPassport from './authentication/init.js';
 import securePasswordConfig from 'secure-password';
@@ -41,7 +43,8 @@ redisServer.open().then(() => {
   const db = database();
   const passwordConfig = securePasswordConfig();
   const User = dbUser(db, passwordConfig);
-  initPassport(passwordConfig, User, redisClient);
+  const AuthToken = AuthTokenProvider(dbAuthToken(db), User);
+  initPassport(passwordConfig, redisClient, User, AuthToken);
 
   app.use(logger('dev'));
   app.use(express.json());
@@ -51,8 +54,9 @@ redisServer.open().then(() => {
   app.use(session(sess));
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(passport.authenticate('remember-me'));
 
-  app.use('/user', userRoutes(User));
+  app.use('/user', userRoutes(AuthToken, User));
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

@@ -13,7 +13,14 @@ export default function AuthToken(AuthDB, User) {
 
     if (!id) return false;
 
-    await User.getById(id);
+    const user = User.getById(id);
+
+    if (!user) return false;
+
+    // For security we should not allow tokens to be reused
+    await AuthDB.clear(selector);
+
+    return user;
   }
   async function grant(user) {
     const selector = uuidv4();
