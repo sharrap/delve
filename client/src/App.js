@@ -12,7 +12,7 @@ import { purple, red } from '@material-ui/core/colors';
 import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
-import Register from './scenes/Register';
+import { Login, Register } from './scenes/Authentication';
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +35,9 @@ function Body() {
       </Route>
       <Route path="/register">
         <Register />
+      </Route>
+      <Route path="/login">
+        <Login />
       </Route>
       <Route path="/">
         <Home />

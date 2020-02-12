@@ -1,6 +1,5 @@
 import React from 'react';
-
-import zxcvbn from 'zxcvbn';
+import PropTypes from 'prop-types';
 
 import {
   Avatar,
@@ -8,11 +7,14 @@ import {
   Container,
   Grid,
   LinearProgress,
+  Link,
   TextField,
   Typography,
 } from '@material-ui/core';
 
-import PasswordField from '../../components/PasswordField';
+import { Link as RouterLink } from 'react-router-dom';
+
+import PasswordField from '../PasswordField';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -20,6 +22,7 @@ import { green, grey, red, yellow } from '@material-ui/core/colors';
 
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 
+import zxcvbn from 'zxcvbn';
 import { validate } from 'email-validator';
 
 const useStyles = makeStyles(theme => ({
@@ -118,22 +121,17 @@ function ColouredProgress(props) {
   );
 }
 
+ColouredProgress.propTypes = {
+  strength: PropTypes.number.isRequired,
+};
+
 export default function Register() {
   const classes = useStyles();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const [passwordStrength, setPasswordStrength] = React.useState(-1);
-
-  React.useEffect(() => {
-    if (!password || password === '') {
-      setPasswordStrength(-1);
-    } else {
-      const { score } = zxcvbn(password);
-      setPasswordStrength(score);
-    }
-  }, [password]);
+  const passwordStrength = password ? zxcvbn(password).score : -1;
 
   return (
     <Container maxWidth="xs">
@@ -190,6 +188,14 @@ export default function Register() {
           >
             Register
           </Button>
+          <Grid container>
+            <Grid item xs />
+            <Grid item>
+              <Link component={RouterLink} to="/login" variant="body2">
+                Already have an account? Sign In
+              </Link>
+            </Grid>
+          </Grid>
         </form>
       </div>
     </Container>
