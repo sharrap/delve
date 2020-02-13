@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: ["error", { "argsIgnorePattern": "barColor" }]*/
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -9,6 +11,7 @@ import {
   LinearProgress,
   Link,
   TextField,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 
@@ -20,7 +23,11 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { green, grey, red, yellow } from '@material-ui/core/colors';
 
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
+import {
+  Info as InfoIcon,
+  LockOutlined as LockOutlinedIcon,
+  Warning as WarningIcon,
+} from '@material-ui/icons';
 
 import zxcvbn from 'zxcvbn';
 import { validate } from 'email-validator';
@@ -47,6 +54,13 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    textAlign: 'left',
+  },
+  iconContainer: {
+    height: '24px',
+  },
+  passwordStrength: {
+    fontWeight: 'bold',
   },
 }));
 
@@ -71,7 +85,7 @@ function passwordTooWeak(strength) {
   return strength < 1;
 }
 
-function ColouredProgress(props) {
+function ColoredProgress(props) {
   const classes = useStyles();
 
   let color, text;
@@ -104,15 +118,37 @@ function ColouredProgress(props) {
 
   return (
     <div className={classes.progressContainer}>
-      <Typography
-        align="left"
-        variant="caption"
-        color={passwordTooWeak(props.strength) ? 'error' : 'textPrimary'}
-        gutterBottom
-      >
-        Password Strength:
-        <strong>{' ' + text}</strong>
-      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={10}>
+          <Typography align="left" variant="caption" gutterBottom>
+            {'Password Strength: '}
+          </Typography>
+          <Typography
+            align="left"
+            variant="caption"
+            fontWeight="bold"
+            color={passwordTooWeak(props.strength) ? 'error' : 'textPrimary'}
+            gutterBottom
+            className={classes.passwordStrength}
+          >
+            {text}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <div className={classes.iconContainer}>
+            {props.warning ? (
+              <Tooltip title={props.warning}>
+                <WarningIcon color="error" />
+              </Tooltip>
+            ) : null}
+            {props.suggestions && props.suggestions.length ? (
+              <Tooltip title={props.suggestions.join(' ')}>
+                <InfoIcon color="action" />
+              </Tooltip>
+            ) : null}
+          </div>
+        </Grid>
+      </Grid>
       <ColoredProgressBar
         variant="determinate"
         value={Math.max(props.strength, 0) * 25}
@@ -122,8 +158,10 @@ function ColouredProgress(props) {
   );
 }
 
-ColouredProgress.propTypes = {
+ColoredProgress.propTypes = {
   strength: PropTypes.number.isRequired,
+  warning: PropTypes.string.isRequired,
+  suggestions: PropTypes.array.isRequired,
 };
 
 export default function Register() {
@@ -132,7 +170,12 @@ export default function Register() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const passwordStrength = password ? zxcvbn(password).score : -1;
+  const passwordRating = password
+    ? zxcvbn(password)
+    : { score: -1, feedback: { warning: '', suggestions: [] } };
+
+  const passwordStrength = passwordRating.score;
+  const passwordFeedback = passwordRating.feedback;
 
   const [badEmail, setBadEmail] = React.useState(false);
   const [badPassword, setBadPassword] = React.useState(false);
@@ -194,7 +237,11 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-              <ColouredProgress strength={passwordStrength} />
+              <ColoredProgress
+                strength={passwordStrength}
+                warning={passwordFeedback.warning}
+                suggestions={passwordFeedback.suggestions}
+              />
             </Grid>
           </Grid>
           <Button
