@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   Avatar,
-  Button,
   Checkbox,
   Container,
   FormControlLabel,
@@ -12,15 +11,20 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import { Alert } from '@material-ui/lab';
+
 import { Link as RouterLink } from 'react-router-dom';
 
-import PasswordField from '../../components/PasswordField';
+import PasswordField from '../PasswordField';
+import LoadingButton from '../LoadingButton';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 
 import { validate } from 'email-validator';
+
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -40,6 +44,11 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  loginError: {
+    marginTop: theme.spacing(3),
+    boxSizing: 'border-box',
+    width: '100%',
+  },
   rememberMeContainer: {
     marginBottom: '2px', // For alignment with Register page
   },
@@ -54,12 +63,41 @@ export default function Login() {
   const [badEmail, setBadEmail] = React.useState(false);
   const [badPassword, setBadPassword] = React.useState(false);
 
+  const [loading, setLoading] = React.useState(false);
+  const [rememberMe, setRememberMe] = React.useState(false);
+
+  const [error, setError] = React.useState('');
+
   function validateEmail() {
     setBadEmail(!validate(email));
   }
 
   function validatePassword() {
     setBadPassword(!password);
+  }
+
+  async function login(evt) {
+    evt.preventDefault();
+
+    setLoading(true);
+    axios
+      .post('/user/signin', {
+        email: email,
+        password: password,
+        rememberMe: rememberMe,
+      })
+      .then(() => {
+        setLoading(false);
+        console.log('todo - succ');
+      })
+      .catch(err => {
+        setLoading(false);
+        if (err.response && err.response.status === 401) {
+          setError('Unrecognized email or password.');
+        } else {
+          setError("Sorry, we can't log you in at this time.");
+        }
+      });
   }
 
   return (
@@ -71,12 +109,7 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign In
         </Typography>
-        <form
-          className={classes.form}
-          noValidate
-          action="/user/signin"
-          method="post"
-        >
+        <form className={classes.form} noValidate onSubmit={login}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -111,21 +144,31 @@ export default function Login() {
           <Grid container className={classes.rememberMeContainer}>
             <Grid item>
               <FormControlLabel
-                control={<Checkbox value="rememberMe" color="primary" />}
+                control={
+                  <Checkbox
+                    id="rememberMe"
+                    color="primary"
+                    value={rememberMe}
+                    onClick={() => setRememberMe(!rememberMe)}
+                  />
+                }
                 label="Stay signed in"
               />
             </Grid>
             <Grid item xs />
           </Grid>
-          <Button
+          <LoadingButton
+            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             disabled={!password || !validate(email)}
+            loading={loading}
+            spinnerSize={15}
             className={classes.submit}
           >
             Log In
-          </Button>
+          </LoadingButton>
           <Grid container>
             <Grid item xs />
             <Grid item>
@@ -135,6 +178,11 @@ export default function Login() {
             </Grid>
           </Grid>
         </form>
+        {error !== '' && (
+          <Alert severity="error" className={classes.loginError}>
+            {error}
+          </Alert>
+        )}
       </div>
     </Container>
   );
