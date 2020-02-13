@@ -297,7 +297,7 @@ export default function Register() {
         </form>
         {registerError && (
           <Alert severity="error" className={classes.loginError}>
-            We could not log you in at this time.
+            {"Sorry, we can't sign you up at this time."}
           </Alert>
         )}
       </div>
