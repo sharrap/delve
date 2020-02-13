@@ -96,18 +96,15 @@ export default function Login() {
             </Grid>
             <Grid item xs={12}>
               <PasswordField
-                autoComplete="current-password"
-                name="password"
                 variant="outlined"
                 required
                 fullWidth
-                id="password"
-                label="Password"
                 onChange={evt => setPassword(evt.target.value)}
                 onBlur={validatePassword}
                 onFocus={() => setBadPassword(false)}
                 value={password}
                 error={badPassword}
+                errorTooltip="Password cannot be empty."
               />
             </Grid>
           </Grid>
