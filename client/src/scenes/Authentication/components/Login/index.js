@@ -40,6 +40,9 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  rememberMeContainer: {
+    marginBottom: '2px', // For alignment with Register page
+  },
 }));
 
 export default function Login() {
@@ -108,7 +111,7 @@ export default function Login() {
               />
             </Grid>
           </Grid>
-          <Grid container>
+          <Grid container className={classes.rememberMeContainer}>
             <Grid item>
               <FormControlLabel
                 control={<Checkbox value="rememberMe" color="primary" />}
