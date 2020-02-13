@@ -20,15 +20,63 @@ export default function PasswordField({
   label,
   error,
   errorTooltip,
+  onFocus,
+  onBlur,
   ...props
 }) {
   const [passwordVisible, setPasswordVisible] = React.useState(false);
 
-  const displayTooltip = error && errorTooltip !== '';
+  const [capsLock, setCapsLock] = React.useState(false);
+  const [focus, setFocus] = React.useState(false);
+
+  const capsLockTooltip = 'Caps Lock is enabled';
+
+  const [displayCapsLockTooltip, setDisplayCapsLockTooltip] = React.useState(
+    false
+  );
+
+  const errorOn = error && errorTooltip !== '';
+  const displayTooltip = errorOn || (capsLock && focus);
+
+  React.useEffect(() => {
+    // We only want to disable tooltips in the event that the other tooltip is
+    // enabled. This is because if the tooltip is already closing (thanks to
+    // only one tooltip entry being on) it will look strange when closing if we
+    // turn off that one entry.
+    if (errorOn || capsLock) {
+      setDisplayCapsLockTooltip(capsLock && focus);
+    }
+  }, [capsLock, errorOn, focus]);
+
+  function updateCapsLock(evt) {
+    setCapsLock(evt.getModifierState('CapsLock'));
+  }
+
+  function handleFocus(evt) {
+    setFocus(true);
+    onFocus(evt);
+  }
+
+  function handleBlur(evt) {
+    setFocus(false);
+    onBlur(evt);
+  }
+
+  React.useEffect(() => {
+    // The caps lock key itself registers as down when enabled and up when
+    // disabled, so we need to check both to catch both that key and any
+    // other keys being pressed when caps lock is on.
+    window.addEventListener('keydown', updateCapsLock);
+    window.addEventListener('keyup', updateCapsLock);
+    return () => {
+      window.removeEventListener('keydown', updateCapsLock);
+      window.removeEventListener('keyup', updateCapsLock);
+    };
+  }, []);
 
   return (
     <Tooltip
-      title={errorTooltip}
+      title={displayCapsLockTooltip ? capsLockTooltip : errorTooltip}
       disableHoverListener
       disableFocusListener
       disableTouchListener
@@ -43,6 +91,8 @@ export default function PasswordField({
         label={label}
         type={passwordVisible ? 'text' : 'password'}
         error={error}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -67,6 +117,8 @@ PasswordField.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   autoComplete: PropTypes.string,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 PasswordField.defaultProps = {
@@ -76,4 +128,6 @@ PasswordField.defaultProps = {
   id: 'password',
   name: 'password',
   autoComplete: 'current-password',
+  onFocus: () => undefined,
+  onBlur: () => undefined,
 };
