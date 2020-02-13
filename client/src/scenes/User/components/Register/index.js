@@ -3,6 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import axios from 'axios';
+
 import {
   Avatar,
   Button,
@@ -58,6 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
   iconContainer: {
     height: '24px',
+    textAlign: 'right',
   },
   passwordStrength: {
     fontWeight: 'bold',
@@ -188,6 +191,18 @@ export default function Register() {
     setBadPassword(passwordTooWeak(passwordStrength));
   }
 
+  function register(evt) {
+    evt.preventDefault();
+
+    axios
+      .post('/user/signup', {
+        email: email,
+        password: password,
+      })
+      .then(resp => console.log(resp))
+      .catch(err => console.log(err));
+  }
+
   return (
     <Container maxWidth="xs">
       <div className={classes.paper}>
@@ -197,12 +212,7 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <form
-          className={classes.form}
-          noValidate
-          action="/user/signup"
-          method="post"
-        >
+        <form className={classes.form} noValidate onSubmit={register}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
