@@ -7,19 +7,19 @@ import axios from 'axios';
 
 import {
   Avatar,
-  Button,
   Container,
   Grid,
   LinearProgress,
   Link,
-  TextField,
   Tooltip,
   Typography,
 } from '@material-ui/core';
 
 import { Link as RouterLink } from 'react-router-dom';
 
+import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
+import LoadingButton from '../LoadingButton';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -31,8 +31,8 @@ import {
   Warning as WarningIcon,
 } from '@material-ui/icons';
 
-import zxcvbn from 'zxcvbn';
 import { validate } from 'email-validator';
+import zxcvbn from 'zxcvbn';
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -180,27 +180,41 @@ export default function Register() {
   const passwordStrength = passwordRating.score;
   const passwordFeedback = passwordRating.feedback;
 
-  const [badEmail, setBadEmail] = React.useState(false);
+  const [emailTaken, setEmailTaken] = React.useState(false);
   const [badPassword, setBadPassword] = React.useState(false);
 
-  function validateEmail() {
-    setBadEmail(!validate(email));
-  }
+  const [loading, setLoading] = React.useState(false);
 
   function validatePassword() {
     setBadPassword(passwordTooWeak(passwordStrength));
   }
 
-  function register(evt) {
+  function handleEmailChanged(evt) {
+    setEmail(evt.target.value);
+    setEmailTaken(false);
+  }
+
+  async function register(evt) {
     evt.preventDefault();
 
+    setLoading(true);
     axios
       .post('/user/signup', {
         email: email,
         password: password,
       })
-      .then(resp => console.log(resp))
-      .catch(err => console.log(err));
+      .then(() => {
+        setLoading(false);
+        console.log('todo - succ');
+      })
+      .catch(err => {
+        setLoading(false);
+        if (err.response && err.response.status === 409) {
+          setEmailTaken(true);
+        } else {
+          console.log('todo - err');
+        }
+      });
   }
 
   return (
@@ -215,19 +229,14 @@ export default function Register() {
         <form className={classes.form} noValidate onSubmit={register}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                autoComplete="email"
-                name="email"
+              <EmailField
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                onChange={evt => setEmail(evt.target.value)}
-                onBlur={validateEmail}
-                onFocus={() => setBadEmail(false)}
+                onChange={handleEmailChanged}
                 value={email}
-                error={badEmail}
+                error={emailTaken}
+                errorTooltip="This email address is already taken."
               />
             </Grid>
             <Grid item xs={12}>
@@ -254,16 +263,18 @@ export default function Register() {
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             disabled={passwordTooWeak(passwordStrength) || !validate(email)}
+            loading={loading}
+            spinnerSize={15}
             className={classes.submit}
           >
             Register
-          </Button>
+          </LoadingButton>
           <Grid container>
             <Grid item xs />
             <Grid item>
