@@ -12,7 +12,7 @@ import { purple, red } from '@material-ui/core/colors';
 import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
-import { Login, Register } from './scenes/Authentication';
+import { Login, Register } from './scenes/User';
 
 const theme = createMuiTheme({
   palette: {
