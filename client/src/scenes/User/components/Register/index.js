@@ -69,6 +69,12 @@ const useStyles = makeStyles(theme => ({
     height: '24px',
     textAlign: 'right',
   },
+  infoIcon: {
+    color: theme.palette.info.main,
+  },
+  warningIcon: {
+    color: theme.palette.warning.main,
+  },
   passwordStrength: {
     fontWeight: 'bold',
   },
@@ -148,12 +154,12 @@ function ColoredProgress(props) {
           <div className={classes.iconContainer}>
             {props.warning ? (
               <Tooltip title={props.warning}>
-                <WarningIcon color="error" />
+                <WarningIcon className={classes.warningIcon} />
               </Tooltip>
             ) : null}
             {props.suggestions && props.suggestions.length ? (
               <Tooltip title={props.suggestions.join(' ')}>
-                <InfoIcon color="action" />
+                <InfoIcon className={classes.infoIcon} />
               </Tooltip>
             ) : null}
           </div>
