@@ -15,6 +15,8 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import { Alert } from '@material-ui/lab';
+
 import { Link as RouterLink } from 'react-router-dom';
 
 import EmailField from '../EmailField';
@@ -57,6 +59,11 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     textAlign: 'left',
+  },
+  loginError: {
+    marginTop: theme.spacing(3),
+    boxSizing: 'border-box',
+    width: '100%',
   },
   iconContainer: {
     height: '24px',
@@ -182,6 +189,7 @@ export default function Register() {
 
   const [emailTaken, setEmailTaken] = React.useState(false);
   const [badPassword, setBadPassword] = React.useState(false);
+  const [registerError, setRegisterError] = React.useState(false);
 
   const [loading, setLoading] = React.useState(false);
 
@@ -212,7 +220,7 @@ export default function Register() {
         if (err.response && err.response.status === 409) {
           setEmailTaken(true);
         } else {
-          console.log('todo - err');
+          setRegisterError(true);
         }
       });
   }
@@ -281,6 +289,11 @@ export default function Register() {
             </Grid>
           </Grid>
         </form>
+        {registerError && (
+          <Alert severity="error" className={classes.loginError}>
+            We could not log you in at this time.
+          </Alert>
+        )}
       </div>
     </Container>
   );
