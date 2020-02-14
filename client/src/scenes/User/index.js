@@ -1,5 +1,5 @@
-import AccountButton from './components/AccountButton';
+import AccountAvatar from './components/AccountAvatar';
 import Login from './components/Login';
 import Register from './components/Register';
 
-export { AccountButton, Login, Register };
+export { AccountAvatar, Login, Register };

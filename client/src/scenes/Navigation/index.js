@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
-import { AccountButton } from '../User';
+import { AccountAvatar } from '../User';
 
 import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
 
@@ -38,7 +38,7 @@ export default function Navigation() {
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           <FormattedMessage id="scenes.Navigation.title" />
         </Typography>
-        <AccountButton />
+        <AccountAvatar />
         <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       </Toolbar>
     </AppBar>

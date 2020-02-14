@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AccountButton({ authenticated, user, setAuthenticated }) {
+function AccountAvatar({ authenticated, user, setAuthenticated }) {
   const classes = useStyles();
   const buttonRef = React.useRef();
 
@@ -136,13 +136,13 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
   );
 }
 
-AccountButton.defaultProps = {
+AccountAvatar.defaultProps = {
   authenticated: false,
   user: undefined,
   setAuthenticated: () => undefined,
 };
 
-AccountButton.propTypes = {
+AccountAvatar.propTypes = {
   authenticated: PropTypes.bool,
   user: PropTypes.any,
   setAuthenticated: PropTypes.func,
@@ -163,9 +163,9 @@ const actionCreators = {
   setAuthenticated: authenticate,
 };
 
-const reduxAccountButton = connect(
+const reduxAccountAvatar = connect(
   mapStateToProps,
   actionCreators
-)(AccountButton);
+)(AccountAvatar);
 
-export default reduxAccountButton;
+export default reduxAccountAvatar;
