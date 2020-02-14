@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 
+import { Provider as ReduxProvider } from 'react-redux';
+
 import { IntlProvider } from 'react-intl';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -13,6 +15,8 @@ import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
 import { Login, Register } from './scenes/User';
+
+import { store as reduxStore } from './_redux';
 
 const theme = createMuiTheme({
   palette: {
@@ -50,12 +54,14 @@ function App() {
   return (
     <IntlProvider locale="en">
       <ThemeProvider theme={theme}>
-        <Router>
-          <div className="App">
-            <Navigation />
-            <Body />
-          </div>
-        </Router>
+        <ReduxProvider store={reduxStore}>
+          <Router>
+            <div className="App">
+              <Navigation />
+              <Body />
+            </div>
+          </Router>
+        </ReduxProvider>
       </ThemeProvider>
     </IntlProvider>
   );
