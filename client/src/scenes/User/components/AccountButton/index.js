@@ -8,11 +8,30 @@ import axios from 'axios';
 
 import { actions } from '../../../../_redux';
 
-import { IconButton, Menu, MenuItem, ListItem } from '@material-ui/core';
+import {
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItem,
+} from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 import { AccountCircle as AccountIcon } from '@material-ui/icons';
 
+function userAvatar(user) {
+  return user && user.email !== '' ? user.email[0] : '?';
+}
+
+const useStyles = makeStyles(theme => ({
+  avatar: {
+    backgroundColor: theme.palette.secondary.main,
+  },
+}));
+
 function AccountButton({ authenticated, user, setAuthenticated }) {
+  const classes = useStyles();
   const buttonRef = React.useRef();
 
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -48,7 +67,13 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
   return (
     <React.Fragment>
       <IconButton ref={buttonRef} onClick={() => setMenuOpen(!menuOpen)}>
-        <AccountIcon />
+        {authenticated ? (
+          <Avatar className={classes.avatar}>{userAvatar(user)}</Avatar>
+        ) : (
+          <Avatar className={classes.avatar}>
+            <AccountIcon />
+          </Avatar>
+        )}
       </IconButton>
       <Menu
         anchorEl={buttonRef.current}
