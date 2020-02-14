@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
 export default function Navigation() {
   const classes = useStyles();
 
-  const drawerRef = React.useRef();
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   return (
     <AppBar position="sticky">
@@ -31,7 +31,7 @@ export default function Navigation() {
           color="inherit"
           aria-label="menu"
           className={classes.menuIcon}
-          onClick={() => drawerRef.current.open()}
+          onClick={() => setDrawerOpen(true)}
         >
           <MenuIcon />
         </IconButton>
@@ -39,7 +39,7 @@ export default function Navigation() {
           <FormattedMessage id="top.titleText" defaultMessage="Delve" />
         </Typography>
         <AccountButton />
-        <NavDrawer ref={drawerRef} />
+        <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       </Toolbar>
     </AppBar>
   );
