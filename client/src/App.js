@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 
 import { Provider as ReduxProvider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
@@ -17,6 +16,8 @@ import { Login, Register } from './scenes/User';
 
 import { store as reduxStore } from './redux';
 import messages from './locale';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   palette: {
@@ -50,7 +51,18 @@ function Body() {
   );
 }
 
+const useStyles = makeStyles(() => ({
+  app: {
+    textAlign: 'center',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}));
+
 function App() {
+  const classes = useStyles();
+
   let locale;
   try {
     locale = navigator.language.split(/[-_]/)[0];
@@ -66,7 +78,7 @@ function App() {
         <ReduxProvider store={reduxStore}>
           <SnackbarProvider maxSnack={3}>
             <Router>
-              <div className="App">
+              <div className={classes.app}>
                 <Navigation />
                 <Body />
               </div>
