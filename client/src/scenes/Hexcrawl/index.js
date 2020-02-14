@@ -1,8 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { grey } from '@material-ui/core/colors';
-
-import './HexcrawlGenerator.css';
 
 import {
   Container,
@@ -29,70 +28,19 @@ import { Height as HeightIcon } from '@material-ui/icons';
 
 import HexcrawlCanvas from './components/HexcrawlCanvas';
 
-class HexcrawlGenerator extends React.PureComponent {
-  minValue = 1;
-  maxValue = 16;
-
-  state = {
-    value: 5,
-  };
-
-  setValue(newValue) {
-    this.setState(prevState => ({
-      value: Math.max(this.minValue, Math.min(newValue, this.maxValue)),
-    }));
-  }
-
-  render() {
-    return (
-      <div className="HexcrawlGeneratorBackground">
-        <Container className="HexcrawlGenerator">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Paper className="HexcrawlPaper">
-                <Typography gutterBottom>Height in hexes</Typography>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={2}>
-                    <HeightIcon />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Slider
-                      value={this.state.value}
-                      min={this.minValue}
-                      max={this.maxValue}
-                      step={1}
-                      onChange={(event, newValue) => this.setValue(newValue)}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Input
-                      inputProps={{
-                        step: 1,
-                        min: this.minValue,
-                        max: this.maxValue,
-                        type: 'number',
-                      }}
-                      onChange={event => this.setValue(event.target.value)}
-                      margin="dense"
-                      value={this.state.value}
-                    />
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={9}>
-              <Paper className="HexcrawlPaper">
-                <Typography variant="h6">Txet</Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </div>
-    );
-  }
-}
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
+  hexcrawlGenerator: {
+    height: '100%',
+    padding: '20px 0',
+    backgroundColor: '#ddd',
+  },
+  hexcrawlGeneratorBackground: {
+    height: '100%',
+    backgroundColor: '#bbb',
+  },
+  hexcrawlPaper: {
+    padding: '0 5px',
+  },
   title: {
     paddingTop: 20,
   },
@@ -105,18 +53,82 @@ const useStyles = makeStyles(theme => ({
   sidebarSection: {
     padding: '5px 0',
   },
+  hexcrawlContainer: {
+    height: '100%',
+    display: 'flex',
+    width: '100vw',
+    overflow: 'hidden',
+  },
 }));
 
-function GridColour(props) {
+function HexcrawlGenerator() {
   const classes = useStyles();
 
+  const minValue = 1;
+  const maxValue = 16;
+
+  const [value, setValue] = React.useState(5);
+
+  function changeValue(newValue) {
+    setValue(Math.max(minValue, Math.min(newValue, maxValue)));
+  }
+
+  return (
+    <div className={classes.hexcrawlGeneratorBackground}>
+      <Container className={classes.hexcrawlGenerator}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper className={classes.hexcrawlPaper}>
+              <Typography gutterBottom>Height in hexes</Typography>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={2}>
+                  <HeightIcon />
+                </Grid>
+                <Grid item xs={6}>
+                  <Slider
+                    value={value}
+                    min={minValue}
+                    max={maxValue}
+                    step={1}
+                    onChange={(event, newValue) => changeValue(newValue)}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Input
+                    inputProps={{
+                      step: 1,
+                      min: minValue,
+                      max: maxValue,
+                      type: 'number',
+                    }}
+                    onChange={event => changeValue(event.target.value)}
+                    margin="dense"
+                    value={value}
+                  />
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={9}>
+            <Paper className={classes.hexcrawlPaper}>
+              <Typography variant="h6">Txet</Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </div>
+  );
+}
+
+function GridColor({ children, color1, color2 }) {
   return (
     <React.Fragment>
-      {props.children.map((component, index) =>
+      {children.map((component, index) =>
         React.cloneElement(component, {
+          key: index.toString(),
           style: {
             ...component.props.style,
-            backgroundColor: index % 2 === 0 ? props.color1 : props.color2,
+            backgroundColor: index % 2 === 0 ? color1 : color2,
           },
         })
       )}
@@ -124,12 +136,24 @@ function GridColour(props) {
   );
 }
 
-function HexcrawlHexEditor(props) {
+GridColor.defaultProps = {
+  children: [],
+  color1: grey[100],
+  color2: grey[100],
+};
+
+GridColor.propTypes = {
+  children: PropTypes.node,
+  color1: PropTypes.any,
+  color2: PropTypes.any,
+};
+
+function HexcrawlHexEditor() {
   const classes = useStyles();
 
   return (
     <Paper square variant="outlined" className={classes.hexEditorWindow}>
-      <GridColour color1={grey[0]} color2={grey[100]}>
+      <GridColor color1={grey[0]} color2={grey[100]}>
         <Paper square variant="outlined" className={classes.sidebarSection}>
           <Typography variant="h4" className={classes.title}>
             Hex Viewer
@@ -155,7 +179,7 @@ function HexcrawlHexEditor(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <GridColour color1={grey[500]} color2={grey[700]}>
+                <GridColor color1={grey[500]} color2={grey[700]}>
                   <TableRow hover>
                     <TableCell>Bagwell Tower</TableCell>
                     <TableCell>Tower</TableCell>
@@ -176,7 +200,7 @@ function HexcrawlHexEditor(props) {
                     <TableCell>Ruin</TableCell>
                     <TableCell>Wilderness</TableCell>
                   </TableRow>
-                </GridColour>
+                </GridColor>
               </TableBody>
             </Table>
           </TableContainer>
@@ -187,16 +211,17 @@ function HexcrawlHexEditor(props) {
         <Paper square variant="outlined" className={classes.sidebarSection}>
           <Typography variant="h6">Repeatable Random Encounters</Typography>
         </Paper>
-      </GridColour>
+      </GridColor>
     </Paper>
   );
 }
 
 function Hexcrawl() {
   const [hexes, setHexes] = React.useState([]);
+  const classes = useStyles();
 
   return (
-    <div className="Hexcrawl">
+    <div className={classes.hexcrawlContainer}>
       <HexcrawlCanvas onSelectHexes={hexes => setHexes(hexes)} />
       <HexcrawlHexEditor hexes={hexes} />
     </div>
