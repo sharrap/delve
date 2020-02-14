@@ -21,6 +21,8 @@ import { Alert } from '@material-ui/lab';
 
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
+import { FormattedMessage } from 'react-intl';
+
 import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
 import LoadingButton from '../LoadingButton';
@@ -113,27 +115,27 @@ function ColoredProgress(props) {
   switch (props.strength) {
     case 4:
       color = 'darkgreen';
-      text = 'Excellent';
+      text = 'scenes.User.Register.passwordExcellent';
       break;
     case 3:
       color = 'green';
-      text = 'Strong';
+      text = 'scenes.User.Register.passwordStrong';
       break;
     case 2:
       color = 'yellow';
-      text = 'Decent';
+      text = 'scenes.User.Register.passwordDecent';
       break;
     case 1:
       color = 'red';
-      text = 'Weak';
+      text = 'scenes.User.Register.passwordWeak';
       break;
     case 0:
       color = 'grey';
-      text = 'Too Weak';
+      text = 'scenes.User.Register.passwordTooWeak';
       break;
     default:
       color = 'grey';
-      text = 'Unknown';
+      text = 'scenes.User.Register.passwordUnknown';
   }
 
   return (
@@ -141,7 +143,7 @@ function ColoredProgress(props) {
       <Grid container spacing={2}>
         <Grid item xs={10}>
           <Typography align="left" variant="caption" gutterBottom>
-            {'Password Strength: '}
+            <FormattedMessage id="scenes.User.Register.passwordStrength" />
           </Typography>
           <Typography
             align="left"
@@ -151,7 +153,7 @@ function ColoredProgress(props) {
             gutterBottom
             className={classes.passwordStrength}
           >
-            {text}
+            <FormattedMessage id={text} />
           </Typography>
         </Grid>
         <Grid item xs={2}>
@@ -225,9 +227,12 @@ function UnauthenticatedRegister({ confirmRegister }) {
       })
       .then(resp => {
         setLoading(false);
-        enqueueSnackbar('Successfully registered and signed in.', {
-          variant: 'success',
-        });
+        enqueueSnackbar(
+          <FormattedMessage id="scenes.User.Register.registerSuccessSnackbar" />,
+          {
+            variant: 'success',
+          }
+        );
         confirmRegister(resp.data);
       })
       .catch(err => {
@@ -247,7 +252,7 @@ function UnauthenticatedRegister({ confirmRegister }) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign Up
+          <FormattedMessage id="scenes.User.Register.title" />
         </Typography>
         <form className={classes.form} noValidate onSubmit={tryRegister}>
           <Grid container spacing={2}>
@@ -293,20 +298,20 @@ function UnauthenticatedRegister({ confirmRegister }) {
             spinnerSize={15}
             className={classes.submit}
           >
-            Register
+            <FormattedMessage id="scenes.User.Register.registerButton" />
           </LoadingButton>
           <Grid container>
             <Grid item xs />
             <Grid item>
               <Link component={RouterLink} to="/login" variant="body2">
-                Already have an account? Sign In
+                <FormattedMessage id="scenes.User.Register.loginLink" />
               </Link>
             </Grid>
           </Grid>
         </form>
         {registerError && (
           <Alert severity="error" className={classes.loginError}>
-            {"Sorry, we can't sign you up at this time."}
+            <FormattedMessage id="scenes.User.Register.registerFailedAlert" />
           </Alert>
         )}
       </div>

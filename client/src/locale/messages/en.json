@@ -9,5 +9,17 @@
   "scenes.User.PasswordField.label": "Password",
   "scenes.User.PasswordField.capsLockTooltip": "Caps Lock is enabled.",
   "scenes.User.Register.emailTakenTooltip": "This email address is already taken.",
-  "scenes.User.Register.passwordTooWeakTooltip": "Password strength must be at least 'Weak'."
+  "scenes.User.Register.loginLink": "Already have an account? Sign in",
+  "scenes.User.Register.passwordDecent": "Decent",
+  "scenes.User.Register.passwordExcellent": "Excellent",
+  "scenes.User.Register.passwordStrength": "Password Strength ",
+  "scenes.User.Register.passwordStrong": "Strong",
+  "scenes.User.Register.passwordTooWeak": "Too Weak",
+  "scenes.User.Register.passwordUnknown": "Unknown",
+  "scenes.User.Register.passwordWeak": "Weak",
+  "scenes.User.Register.passwordTooWeakTooltip": "Password strength must be at least 'Weak'.",
+  "scenes.User.Register.registerButton": "Sign Up",
+  "scenes.User.Register.registerFailedAlert": "Sorry, we can't sign you up at this time.",
+  "scenes.User.Register.registerSuccessSnackbar": "Successfully registered and signed in.",
+  "scenes.User.Register.title": "Sign Up"
 }
