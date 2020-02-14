@@ -12,7 +12,6 @@ import {
   FormControlLabel,
   Grid,
   Link,
-  TextField,
   Typography,
 } from '@material-ui/core';
 
@@ -20,6 +19,7 @@ import { Alert } from '@material-ui/lab';
 
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
+import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
 import LoadingButton from '../LoadingButton';
 
@@ -67,17 +67,12 @@ function UnauthenticatedLogin({ confirmLogin }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const [badEmail, setBadEmail] = React.useState(false);
   const [badPassword, setBadPassword] = React.useState(false);
 
   const [loading, setLoading] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
 
   const [error, setError] = React.useState('');
-
-  function validateEmail() {
-    setBadEmail(!validate(email));
-  }
 
   function validatePassword() {
     setBadPassword(!password);
@@ -120,19 +115,12 @@ function UnauthenticatedLogin({ confirmLogin }) {
         <form className={classes.form} noValidate onSubmit={login}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                autoComplete="email"
-                name="email"
+              <EmailField
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
                 onChange={evt => setEmail(evt.target.value)}
-                onBlur={validateEmail}
-                onFocus={() => setBadEmail(false)}
                 value={email}
-                error={badEmail}
               />
             </Grid>
             <Grid item xs={12}>
