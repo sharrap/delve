@@ -15,7 +15,7 @@ import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
 import { Login, Register } from './scenes/User';
 
-import { store as reduxStore } from './_redux';
+import { store as reduxStore } from './redux';
 
 const theme = createMuiTheme({
   palette: {
