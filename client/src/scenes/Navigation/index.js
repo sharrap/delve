@@ -36,7 +36,7 @@ export default function Navigation() {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
-          <FormattedMessage id="top.titleText" defaultMessage="Delve" />
+          <FormattedMessage id="scenes.Navigation.title" />
         </Typography>
         <AccountButton />
         <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />

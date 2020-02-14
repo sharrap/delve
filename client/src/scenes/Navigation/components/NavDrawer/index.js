@@ -14,6 +14,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Home as HomeIcon } from '@material-ui/icons';
 import { HexagonMultiple } from 'mdi-material-ui';
 
+import { FormattedMessage } from 'react-intl';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -34,7 +36,9 @@ export default function NavDrawer({ open, onClose }) {
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
-          <ListItemText primary="Home" />
+          <ListItemText
+            primary={<FormattedMessage id="scenes.Navigation.NavDrawer.home" />}
+          />
         </ListItem>
         <ListItem
           button
@@ -45,7 +49,11 @@ export default function NavDrawer({ open, onClose }) {
           <ListItemIcon>
             <HexagonMultiple />
           </ListItemIcon>
-          <ListItemText primary="Hexcrawl" />
+          <ListItemText
+            primary={
+              <FormattedMessage id="scenes.Navigation.NavDrawer.hexcrawl" />
+            }
+          />
         </ListItem>
       </List>
     </Drawer>
