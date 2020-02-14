@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Link as RouterLink } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 import { actions } from 'src/redux';
 import routes from 'src/routes';
@@ -67,12 +68,18 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
       .logout()
       .then(() => {
         setAuthenticated({ authenticated: false });
-        enqueueSnackbar('Successfully signed out.', { variant: 'success' });
+        enqueueSnackbar(
+          <FormattedMessage id="scenes.User.AccountAvatar.logoutSuccessSnackbar" />,
+          { variant: 'success' }
+        );
       })
       .catch(() =>
-        enqueueSnackbar('Sorry, we could not sign you out at this time', {
-          variant: 'error',
-        })
+        enqueueSnackbar(
+          <FormattedMessage id="scenes.User.AccountAvatar.logoutFailedSnackbar" />,
+          {
+            variant: 'error',
+          }
+        )
       );
   }
 
@@ -110,7 +117,7 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
               to="/login"
               onClick={closeMenu}
             >
-              Sign In
+              <FormattedMessage id="scenes.User.AccountAvatar.loginMenuItem" />
             </ListItem>
           </MenuItem>
         )}
@@ -122,13 +129,13 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
               to="/register"
               onClick={closeMenu}
             >
-              Sign Up
+              <FormattedMessage id="scenes.User.AccountAvatar.registerMenuItem" />
             </ListItem>
           </MenuItem>
         )}
         {menuAuthenticated && (
           <MenuItem dense onClick={tryLogout}>
-            Sign Out
+            <FormattedMessage id="scenes.User.AccountAvatar.logoutMenuItem" />
           </MenuItem>
         )}
       </Menu>
