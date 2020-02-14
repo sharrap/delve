@@ -16,6 +16,7 @@ import Navigation from './scenes/Navigation';
 import { Login, Register } from './scenes/User';
 
 import { store as reduxStore } from './redux';
+import messages from './locale';
 
 const theme = createMuiTheme({
   palette: {
@@ -50,8 +51,17 @@ function Body() {
 }
 
 function App() {
+  let locale;
+  try {
+    locale = navigator.language.split(/[-_]/)[0];
+  } catch (err) {
+    console.log('Could not determine locale', err);
+  }
+
+  if (!locale || locale === '' || !messages[locale]) locale = 'en';
+
   return (
-    <IntlProvider locale="en">
+    <IntlProvider locale={locale} messages={messages[locale]}>
       <ThemeProvider theme={theme}>
         <ReduxProvider store={reduxStore}>
           <SnackbarProvider maxSnack={3}>
