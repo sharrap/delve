@@ -56,8 +56,12 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
       .catch(() => setAuthenticated({ authenticated: false }));
   }
 
-  function tryLogout() {
+  function closeMenu() {
     setMenuOpen(false);
+  }
+
+  function tryLogout() {
+    closeMenu();
 
     routes.auth
       .logout()
@@ -94,20 +98,30 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
         getContentAnchorEl={null}
         keepMounted
         open={menuOpen}
-        onClose={() => setMenuOpen(false)}
+        onClose={closeMenu}
         onExiting={() => setMenuClosing(true)}
         onExited={() => setMenuClosing(false)}
       >
         {!menuAuthenticated && (
           <MenuItem dense>
-            <ListItem dense component={RouterLink} to="/login">
+            <ListItem
+              dense
+              component={RouterLink}
+              to="/login"
+              onClick={closeMenu}
+            >
               Sign In
             </ListItem>
           </MenuItem>
         )}
         {!menuAuthenticated && (
           <MenuItem dense>
-            <ListItem dense component={RouterLink} to="/register">
+            <ListItem
+              dense
+              component={RouterLink}
+              to="/register"
+              onClick={closeMenu}
+            >
               Sign Up
             </ListItem>
           </MenuItem>
