@@ -9,7 +9,7 @@ export default function(AuthToken, User) {
     return { email: user.email };
   }
 
-  router.get('/logged-in', (req, res) => {
+  router.get('/signed-in', (req, res) => {
     if (req.isAuthenticated()) {
       return res
         .status(200)

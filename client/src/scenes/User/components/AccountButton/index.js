@@ -52,7 +52,7 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
 
   function checkAuthenticated() {
     axios
-      .get('/user/logged-in', { withCredentials: true })
+      .get('/user/signed-in', { withCredentials: true })
       .then(resp => setAuthenticated(resp.data))
       .catch(() => setAuthenticated({ authenticated: false }));
   }
