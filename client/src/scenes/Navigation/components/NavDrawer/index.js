@@ -9,6 +9,8 @@ import {
   ListItemText,
 } from '@material-ui/core';
 
+import { Link as RouterLink } from 'react-router-dom';
+
 import { Home as HomeIcon } from '@material-ui/icons';
 import { HexagonMultiple } from 'mdi-material-ui';
 
@@ -28,13 +30,18 @@ export default function NavDrawer({ open, onClose }) {
   return (
     <Drawer open={open} ModalProps={{ onBackdropClick: onClose }}>
       <List className={classes.navDrawer}>
-        <ListItem button component="a" href="/" onClick={onClose}>
+        <ListItem button component={RouterLink} to="/" onClick={onClose}>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component="a" href="/hexcrawl" onClick={onClose}>
+        <ListItem
+          button
+          component={RouterLink}
+          to="/hexcrawl"
+          onClick={onClose}
+        >
           <ListItemIcon>
             <HexagonMultiple />
           </ListItemIcon>
