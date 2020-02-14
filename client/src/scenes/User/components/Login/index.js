@@ -19,6 +19,8 @@ import { Alert } from '@material-ui/lab';
 
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
+import { FormattedMessage } from 'react-intl';
+
 import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
 import LoadingButton from '../LoadingButton';
@@ -90,15 +92,18 @@ function UnauthenticatedLogin({ confirmLogin }) {
       })
       .then(resp => {
         setLoading(false);
-        enqueueSnackbar('Successfully signed in.', { variant: 'success' });
+        enqueueSnackbar(
+          <FormattedMessage id="scenes.User.Login.loginSuccessSnackbar" />,
+          { variant: 'success' }
+        );
         confirmLogin(resp.data);
       })
       .catch(err => {
         setLoading(false);
         if (err.response && err.response.status === 403) {
-          setError('Unrecognized email or password.');
+          setError('scenes.User.Login.loginRejectedAlert');
         } else {
-          setError("Sorry, we can't log you in at this time.");
+          setError('scenes.User.Login.loginFailedAlert');
         }
       });
   }
@@ -110,7 +115,7 @@ function UnauthenticatedLogin({ confirmLogin }) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign In
+          <FormattedMessage id="scenes.User.Login.title" />
         </Typography>
         <form className={classes.form} noValidate onSubmit={login}>
           <Grid container spacing={2}>
@@ -148,7 +153,9 @@ function UnauthenticatedLogin({ confirmLogin }) {
                     onClick={() => setRememberMe(!rememberMe)}
                   />
                 }
-                label="Stay signed in"
+                label={
+                  <FormattedMessage id="scenes.User.Login.rememberMeCheckbox" />
+                }
               />
             </Grid>
             <Grid item xs />
@@ -163,20 +170,20 @@ function UnauthenticatedLogin({ confirmLogin }) {
             spinnerSize={15}
             className={classes.submit}
           >
-            Log In
+            <FormattedMessage id="scenes.User.Login.loginButton" />
           </LoadingButton>
           <Grid container>
             <Grid item xs />
             <Grid item>
               <Link component={RouterLink} to="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+                <FormattedMessage id="scenes.User.Login.registerLink" />
               </Link>
             </Grid>
           </Grid>
         </form>
         {error !== '' && (
           <Alert severity="error" className={classes.loginError}>
-            {error}
+            <FormattedMessage id={error} />
           </Alert>
         )}
       </div>
