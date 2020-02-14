@@ -65,13 +65,14 @@ export default function(db, passwordConfig) {
 
     const hash = passwordConfig.hashSync(Buffer.from(password));
 
-    const user = await db.query(
+    const result = await db.query(
       'INSERT INTO users (email, hashed_password) \
-           VALUES ($1::text, $2::text)',
+           VALUES ($1::text, $2::text) \
+           RETURNING id, email;',
       [lcEmail, hash.toString().replace(/\0+$/g, '')]
     );
 
-    return user;
+    return user(result);
   }
 
   return {

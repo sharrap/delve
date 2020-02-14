@@ -23,7 +23,7 @@ import { AccountCircle as AccountIcon } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 
 function userAvatar(user) {
-  return user && user.email !== '' ? user.email[0] : '?';
+  return user && user.email && user.email !== '' ? user.email[0] : '?';
 }
 
 const useStyles = makeStyles(theme => ({
