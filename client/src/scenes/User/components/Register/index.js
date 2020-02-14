@@ -2,8 +2,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import axios from 'axios';
+
+import { actions } from '../../../../_redux';
 
 import {
   Avatar,
@@ -17,7 +20,7 @@ import {
 
 import { Alert } from '@material-ui/lab';
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
@@ -180,7 +183,7 @@ ColoredProgress.propTypes = {
   suggestions: PropTypes.array.isRequired,
 };
 
-export default function Register() {
+function UnauthenticatedRegister({ confirmRegister }) {
   const classes = useStyles();
 
   const [email, setEmail] = React.useState('');
@@ -208,7 +211,7 @@ export default function Register() {
     setEmailTaken(false);
   }
 
-  async function register(evt) {
+  async function tryRegister(evt) {
     evt.preventDefault();
 
     setLoading(true);
@@ -217,9 +220,9 @@ export default function Register() {
         email: email,
         password: password,
       })
-      .then(() => {
+      .then(resp => {
         setLoading(false);
-        console.log('todo - succ');
+        confirmRegister(resp.data);
       })
       .catch(err => {
         setLoading(false);
@@ -240,7 +243,7 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <form className={classes.form} noValidate onSubmit={register}>
+        <form className={classes.form} noValidate onSubmit={tryRegister}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <EmailField
@@ -304,3 +307,45 @@ export default function Register() {
     </Container>
   );
 }
+
+UnauthenticatedRegister.defaultProps = {
+  confirmRegister: () => undefined,
+};
+
+UnauthenticatedRegister.propTypes = {
+  confirmRegister: PropTypes.func,
+};
+
+function Register({ authenticated, ...props }) {
+  return authenticated ? (
+    <Redirect to="/" />
+  ) : (
+    <UnauthenticatedRegister {...props} />
+  );
+}
+
+Register.defaultProps = {
+  ...UnauthenticatedRegister.defaultProps,
+  authenticated: false,
+};
+
+Register.propTypes = {
+  ...UnauthenticatedRegister.propTypes,
+  authenticated: PropTypes.bool,
+};
+
+function mapStateToProps({ auth }) {
+  return { authenticated: auth.authenticated };
+}
+
+function register({ user }) {
+  return dispatch => dispatch({ type: actions.auth.LOG_IN, user: user });
+}
+
+const actionCreators = {
+  confirmRegister: register,
+};
+
+const reduxRegisterPage = connect(mapStateToProps, actionCreators)(Register);
+
+export default reduxRegisterPage;

@@ -1,4 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import axios from 'axios';
+
+import { actions } from '../../../../_redux';
 
 import {
   Avatar,
@@ -13,7 +19,7 @@ import {
 
 import { Alert } from '@material-ui/lab';
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 import PasswordField from '../PasswordField';
 import LoadingButton from '../LoadingButton';
@@ -23,8 +29,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 
 import { validate } from 'email-validator';
-
-import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -54,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Login() {
+function UnauthenticatedLogin({ confirmLogin }) {
   const classes = useStyles();
 
   const [email, setEmail] = React.useState('');
@@ -86,13 +90,13 @@ export default function Login() {
         password: password,
         rememberMe: rememberMe,
       })
-      .then(() => {
+      .then(resp => {
         setLoading(false);
-        console.log('todo - succ');
+        confirmLogin(resp.data);
       })
       .catch(err => {
         setLoading(false);
-        if (err.response && err.response.status === 401) {
+        if (err.response && err.response.status === 403) {
           setError('Unrecognized email or password.');
         } else {
           setError("Sorry, we can't log you in at this time.");
@@ -187,3 +191,46 @@ export default function Login() {
     </Container>
   );
 }
+
+UnauthenticatedLogin.defaultProps = {
+  confirmLogin: () => undefined,
+};
+
+UnauthenticatedLogin.propTypes = {
+  confirmLogin: PropTypes.func,
+};
+
+function Login({ authenticated, ...props }) {
+  return authenticated ? (
+    <Redirect to="/" />
+  ) : (
+    <UnauthenticatedLogin {...props} />
+  );
+}
+
+Login.defaultProps = {
+  ...UnauthenticatedLogin.defaultProps,
+  authenticated: false,
+};
+
+Login.propTypes = {
+  ...UnauthenticatedLogin.propTypes,
+  confirmLogin: PropTypes.func,
+  authenticated: PropTypes.bool,
+};
+
+function mapStateToProps({ auth }) {
+  return { authenticated: auth.authenticated };
+}
+
+function login({ user }) {
+  return dispatch => dispatch({ type: actions.auth.LOG_IN, user: user });
+}
+
+const actionCreators = {
+  confirmLogin: login,
+};
+
+const reduxLoginPage = connect(mapStateToProps, actionCreators)(Login);
+
+export default reduxLoginPage;
