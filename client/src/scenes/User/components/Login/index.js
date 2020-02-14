@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import axios from 'axios';
-
 import { actions } from '../../../../_redux';
+import routes from '../../../../routes';
 
 import {
   Avatar,
@@ -88,8 +87,8 @@ function UnauthenticatedLogin({ confirmLogin }) {
     evt.preventDefault();
 
     setLoading(true);
-    axios
-      .post('/user/signin', {
+    routes.auth
+      .login({
         email: email,
         password: password,
         rememberMe: rememberMe,

@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 
 import { Link as RouterLink } from 'react-router-dom';
 
-import axios from 'axios';
-
 import { actions } from '../../../../_redux';
+import routes from '../../../../routes';
 
 import {
   Avatar,
@@ -51,8 +50,8 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
   }, [authenticated, menuClosing, menuOpen]);
 
   function checkAuthenticated() {
-    axios
-      .get('/user/signed-in', { withCredentials: true })
+    routes.auth
+      .loggedIn()
       .then(resp => setAuthenticated(resp.data))
       .catch(() => setAuthenticated({ authenticated: false }));
   }
@@ -60,8 +59,8 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
   function tryLogout() {
     setMenuOpen(false);
 
-    axios
-      .post('/user/signout', { withCredentials: true })
+    routes.auth
+      .logout()
       .then(() => {
         setAuthenticated({ authenticated: false });
         enqueueSnackbar('Successfully signed out.', { variant: 'success' });

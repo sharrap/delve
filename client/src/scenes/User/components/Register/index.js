@@ -4,9 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import axios from 'axios';
-
 import { actions } from '../../../../_redux';
+import routes from '../../../../routes';
 
 import {
   Avatar,
@@ -219,8 +218,8 @@ function UnauthenticatedRegister({ confirmRegister }) {
     evt.preventDefault();
 
     setLoading(true);
-    axios
-      .post('/user/signup', {
+    routes.auth
+      .register({
         email: email,
         password: password,
       })
