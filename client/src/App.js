@@ -2,9 +2,8 @@ import React from 'react';
 import './App.css';
 
 import { Provider as ReduxProvider } from 'react-redux';
-
 import { IntlProvider } from 'react-intl';
-
+import { SnackbarProvider } from 'notistack';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -55,12 +54,14 @@ function App() {
     <IntlProvider locale="en">
       <ThemeProvider theme={theme}>
         <ReduxProvider store={reduxStore}>
-          <Router>
-            <div className="App">
-              <Navigation />
-              <Body />
-            </div>
-          </Router>
+          <SnackbarProvider maxSnack={3}>
+            <Router>
+              <div className="App">
+                <Navigation />
+                <Body />
+              </div>
+            </Router>
+          </SnackbarProvider>
         </ReduxProvider>
       </ThemeProvider>
     </IntlProvider>
