@@ -4,8 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { actions } from '../../../../_redux';
-import routes from '../../../../routes';
+import { actions } from 'src/redux';
+import routes from 'src/routes';
 
 import {
   Avatar,

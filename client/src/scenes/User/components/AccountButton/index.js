@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import { Link as RouterLink } from 'react-router-dom';
 
-import { actions } from '../../../../_redux';
-import routes from '../../../../routes';
+import { actions } from 'src/redux';
+import routes from 'src/routes';
 
 import {
   Avatar,
