@@ -30,6 +30,8 @@ import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 
 import { validate } from 'email-validator';
 
+import { useSnackbar } from 'notistack';
+
 const useStyles = makeStyles(theme => ({
   form: {
     marginTop: theme.spacing(1),
@@ -60,6 +62,8 @@ const useStyles = makeStyles(theme => ({
 
 function UnauthenticatedLogin({ confirmLogin }) {
   const classes = useStyles();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -92,6 +96,7 @@ function UnauthenticatedLogin({ confirmLogin }) {
       })
       .then(resp => {
         setLoading(false);
+        enqueueSnackbar('Successfully signed in.', { variant: 'success' });
         confirmLogin(resp.data);
       })
       .catch(err => {

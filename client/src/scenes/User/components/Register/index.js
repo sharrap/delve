@@ -39,6 +39,8 @@ import {
 import { validate } from 'email-validator';
 import zxcvbn from 'zxcvbn';
 
+import { useSnackbar } from 'notistack';
+
 const useStyles = makeStyles(theme => ({
   form: {
     marginTop: theme.spacing(1),
@@ -186,6 +188,8 @@ ColoredProgress.propTypes = {
 function UnauthenticatedRegister({ confirmRegister }) {
   const classes = useStyles();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -222,6 +226,9 @@ function UnauthenticatedRegister({ confirmRegister }) {
       })
       .then(resp => {
         setLoading(false);
+        enqueueSnackbar('Successfully registered and signed in.', {
+          variant: 'success',
+        });
         confirmRegister(resp.data);
       })
       .catch(err => {

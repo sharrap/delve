@@ -20,6 +20,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { AccountCircle as AccountIcon } from '@material-ui/icons';
 
+import { useSnackbar } from 'notistack';
+
 function userAvatar(user) {
   return user && user.email !== '' ? user.email[0] : '?';
 }
@@ -33,6 +35,8 @@ const useStyles = makeStyles(theme => ({
 function AccountButton({ authenticated, user, setAuthenticated }) {
   const classes = useStyles();
   const buttonRef = React.useRef();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -58,8 +62,15 @@ function AccountButton({ authenticated, user, setAuthenticated }) {
 
     axios
       .post('/user/signout', { withCredentials: true })
-      .then(() => setAuthenticated({ authenticated: false }))
-      .catch(err => console.log('todo'));
+      .then(() => {
+        setAuthenticated({ authenticated: false });
+        enqueueSnackbar('Successfully signed out.', { variant: 'success' });
+      })
+      .catch(() =>
+        enqueueSnackbar('Sorry, we could not sign you out at this time', {
+          variant: 'error',
+        })
+      );
   }
 
   React.useEffect(checkAuthenticated, []);
