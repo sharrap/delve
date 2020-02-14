@@ -145,7 +145,7 @@ function UnauthenticatedLogin({ confirmLogin }) {
                 onFocus={() => setBadPassword(false)}
                 value={password}
                 error={badPassword}
-                errorTooltip="Password cannot be empty."
+                errorTooltip="scenes.User.Login.emptyPasswordTooltip"
               />
             </Grid>
           </Grid>

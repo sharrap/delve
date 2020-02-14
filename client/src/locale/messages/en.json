@@ -2,5 +2,12 @@
   "scenes.Home.title": "Delve",
   "scenes.Navigation.title": "Delve",
   "scenes.Navigation.NavDrawer.home": "Home",
-  "scenes.Navigation.NavDrawer.hexcrawl": "Hexcrawl"
+  "scenes.Navigation.NavDrawer.hexcrawl": "Hexcrawl",
+  "scenes.User.EmailField.label": "Email Address",
+  "scenes.User.EmailField.invalidTooltip": "This does not appear to be a valid email address.",
+  "scenes.User.Login.emptyPasswordTooltip": "Password cannot be empty.",
+  "scenes.User.PasswordField.label": "Password",
+  "scenes.User.PasswordField.capsLockTooltip": "Caps Lock is enabled.",
+  "scenes.User.Register.emailTakenTooltip": "This email address is already taken.",
+  "scenes.User.Register.passwordTooWeakTooltip": "Password strength must be at least 'Weak'."
 }

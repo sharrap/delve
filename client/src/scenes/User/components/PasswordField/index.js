@@ -13,6 +13,8 @@ import {
   Visibility as VisibilityOnIcon,
 } from '@material-ui/icons';
 
+import { FormattedMessage } from 'react-intl';
+
 export default function PasswordField({
   autoComplete,
   name,
@@ -29,7 +31,7 @@ export default function PasswordField({
   const [capsLock, setCapsLock] = React.useState(false);
   const [focus, setFocus] = React.useState(false);
 
-  const capsLockTooltip = 'Caps Lock is enabled';
+  const capsLockTooltip = 'scenes.User.PasswordField.capsLockTooltip';
 
   const [displayCapsLockTooltip, setDisplayCapsLockTooltip] = React.useState(
     false
@@ -76,7 +78,11 @@ export default function PasswordField({
 
   return (
     <Tooltip
-      title={displayCapsLockTooltip ? capsLockTooltip : errorTooltip}
+      title={
+        <FormattedMessage
+          id={displayCapsLockTooltip ? capsLockTooltip : errorTooltip}
+        />
+      }
       disableHoverListener
       disableFocusListener
       disableTouchListener
@@ -88,7 +94,7 @@ export default function PasswordField({
         id={id}
         name={name}
         autoComplete={autoComplete}
-        label={label}
+        label={<FormattedMessage id={label} />}
         type={passwordVisible ? 'text' : 'password'}
         error={error}
         onFocus={handleFocus}
@@ -124,7 +130,7 @@ PasswordField.propTypes = {
 PasswordField.defaultProps = {
   error: false,
   errorTooltip: '',
-  label: 'Password',
+  label: 'scenes.User.PasswordField.label',
   id: 'password',
   name: 'password',
   autoComplete: 'current-password',

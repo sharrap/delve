@@ -259,7 +259,7 @@ function UnauthenticatedRegister({ confirmRegister }) {
                 onChange={handleEmailChanged}
                 value={email}
                 error={emailTaken}
-                errorTooltip="This email address is already taken."
+                errorTooltip="scenes.User.Register.emailTakenTooltip"
               />
             </Grid>
             <Grid item xs={12}>
@@ -272,7 +272,7 @@ function UnauthenticatedRegister({ confirmRegister }) {
                 onFocus={() => setBadPassword(false)}
                 value={password}
                 error={badPassword}
-                errorTooltip="Password strength must be at least weak."
+                errorTooltip="scenes.User.Register.passwordTooWeakTooltip"
               />
             </Grid>
             <Grid item xs={12}>

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { TextField, Tooltip } from '@material-ui/core';
+import { FormattedMessage } from 'react-intl';
 
 import { validate } from 'email-validator';
 
@@ -16,7 +17,7 @@ export default function EmailField({
   onFocus,
   ...props
 }) {
-  const defaultTooltip = 'This does not appear to be a valid email address.';
+  const defaultTooltip = 'scenes.User.EmailField.invalidTooltip';
   const [badEmail, setBadEmail] = React.useState(false);
   const [tooltip, setTooltip] = React.useState(defaultTooltip);
 
@@ -44,7 +45,7 @@ export default function EmailField({
 
   return (
     <Tooltip
-      title={tooltip}
+      title={<FormattedMessage id={tooltip} />}
       disableHoverListener
       disableFocusListener
       disableTouchListener
@@ -56,7 +57,7 @@ export default function EmailField({
         autoComplete={autoComplete}
         id={id}
         name={name}
-        label={label}
+        label={<FormattedMessage id={label} />}
         error={errorOn}
         onBlur={handleBlur}
         onFocus={handleFocus}
@@ -79,7 +80,7 @@ EmailField.propTypes = {
 EmailField.defaultProps = {
   error: false,
   errorTooltip: '',
-  label: 'Email Address',
+  label: 'scenes.User.EmailField.label',
   id: 'email',
   name: 'email',
   autoComplete: 'email',
