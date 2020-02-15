@@ -1,12 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { TextField, Tooltip } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
 import { validate } from 'email-validator';
 
-export default function EmailField({
+interface EmailFieldProps {
+  label: string;
+  error: boolean;
+  errorTooltip: string;
+  id: string;
+  name: string;
+  autoComplete: string;
+  onBlur: (evt: React.SyntheticEvent) => void;
+  onFocus: (evt: React.SyntheticEvent) => void;
+}
+
+const EmailField: React.FunctionComponent<EmailFieldProps> = ({
   error,
   label,
   errorTooltip,
@@ -16,7 +26,7 @@ export default function EmailField({
   onBlur,
   onFocus,
   ...props
-}) {
+}: EmailFieldProps) => {
   const defaultTooltip = 'scenes.User.EmailField.invalidTooltip';
   const [badEmail, setBadEmail] = React.useState(false);
   const [tooltip, setTooltip] = React.useState(defaultTooltip);
@@ -33,12 +43,13 @@ export default function EmailField({
     }
   }, [error, badEmail, errorTooltip]);
 
-  function handleBlur(evt) {
-    setBadEmail(!validate(evt.target.value));
+  function handleBlur(evt: React.SyntheticEvent): void {
+    const target = evt.target as HTMLInputElement;
+    setBadEmail(!validate(target.value));
     onBlur(evt);
   }
 
-  function handleFocus(evt) {
+  function handleFocus(evt: React.SyntheticEvent): void {
     setBadEmail(false);
     onFocus(evt);
   }
@@ -64,17 +75,6 @@ export default function EmailField({
       />
     </Tooltip>
   );
-}
-
-EmailField.propTypes = {
-  error: PropTypes.bool,
-  errorTooltip: PropTypes.string,
-  label: PropTypes.string,
-  id: PropTypes.string,
-  name: PropTypes.string,
-  autoComplete: PropTypes.string,
-  onBlur: PropTypes.func,
-  onFocus: PropTypes.func,
 };
 
 EmailField.defaultProps = {
@@ -84,6 +84,8 @@ EmailField.defaultProps = {
   id: 'email',
   name: 'email',
   autoComplete: 'email',
-  onBlur: () => undefined,
-  onFocus: () => undefined,
+  onBlur: (): void => undefined,
+  onFocus: (): void => undefined,
 };
+
+export default EmailField;
