@@ -26,7 +26,7 @@ interface PasswordFieldNewProps {
   onBlur?: (evt: React.SyntheticEvent) => void;
 }
 
-type PasswordFieldProps = TextFieldProps & PasswordFieldProps;
+type PasswordFieldProps = TextFieldProps & PasswordFieldNewProps;
 
 const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
   autoComplete = 'current-password',

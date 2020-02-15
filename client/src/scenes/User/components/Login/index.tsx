@@ -1,9 +1,7 @@
 import React from 'react';
-import { Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import { ThunkAction } from 'redux-thunk';
+import * as Redux from 'react-redux';
 
-import { actions, AuthAction, AuthState, AuthUser, State } from 'src/redux';
+import { actions, RootState, ThunkDispatch } from 'src/redux';
 import routes from 'src/routes';
 
 import {
@@ -62,14 +60,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface UnauthenticatedLoginProps {
-  confirmLogin?: (user: AuthUser) => void;
-}
-
-const UnauthenticatedLogin: React.FunctionComponent<UnauthenticatedLoginProps> = ({
-  confirmLogin = (): void => undefined,
-}: UnauthenticatedLoginProps) => {
+const UnauthenticatedLogin: React.FunctionComponent = () => {
   const classes = useStyles();
+
+  const dispatch = Redux.useDispatch<ThunkDispatch>();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -103,7 +97,7 @@ const UnauthenticatedLogin: React.FunctionComponent<UnauthenticatedLoginProps> =
           <FormattedMessage id="scenes.User.Login.loginSuccessSnackbar" />,
           { variant: 'success' }
         );
-        confirmLogin(resp.data.user);
+        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
       })
       .catch(err => {
         setLoading(false);
@@ -210,41 +204,11 @@ const UnauthenticatedLogin: React.FunctionComponent<UnauthenticatedLoginProps> =
   );
 };
 
-interface AuthenticationProps {
-  authenticated: boolean;
-}
-
-type LoginProps = UnauthenticatedLoginProps & AuthenticationProps;
-
-const Login: React.FunctionComponent<LoginProps> = ({
-  authenticated,
-  ...props
-}: LoginProps) => {
-  return authenticated ? (
-    <Redirect to="/" />
-  ) : (
-    <UnauthenticatedLogin {...props} />
+const Login: React.FunctionComponent = () => {
+  const authenticated = Redux.useSelector<RootState>(
+    state => state.auth.authenticated
   );
+  return authenticated ? <Redirect to="/" /> : <UnauthenticatedLogin />;
 };
 
-Login.defaultProps = {
-  ...UnauthenticatedLogin.defaultProps,
-  authenticated: false,
-};
-
-function mapStateToProps({ auth }: State): AuthenticationProps {
-  return { authenticated: auth.authenticated };
-}
-
-const login = (
-  user: AuthUser
-): ThunkAction<void, State, unknown, AuthAction> => (dispatch): AuthState =>
-  dispatch({ type: actions.auth.LOG_IN, user: user });
-
-const actionCreators = {
-  confirmLogin: login,
-};
-
-const reduxLoginPage = connect(mapStateToProps, actionCreators)(Login);
-
-export default reduxLoginPage;
+export default Login;

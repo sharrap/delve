@@ -7,4 +7,6 @@ export type AuthAction = reducers.AuthAction;
 export type AuthState = reducers.AuthState;
 export type AuthUser = reducers.AuthUser;
 
-export type State = reducers.State;
+export type RootState = reducers.State;
+export type ThunkAction<R> = reducers.ThunkAction<R>;
+export type ThunkDispatch = reducers.ThunkDispatch;

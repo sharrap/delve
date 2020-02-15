@@ -1,4 +1,8 @@
-import { combineReducers } from 'redux';
+import { combineReducers, Action } from 'redux';
+import {
+  ThunkAction as ReduxThunkAction,
+  ThunkDispatch as ReduxThunkDispatch,
+} from 'redux-thunk';
 import {
   actions as authActions,
   reducer as authReducer,
@@ -17,6 +21,11 @@ export const actions = {
   auth: authActions,
 };
 
-export interface State {
-  auth: AuthState;
-}
+export type State = ReturnType<typeof rootReducer>;
+export type ThunkAction<R> = ReduxThunkAction<
+  R,
+  State,
+  unknown,
+  Action<string>
+>;
+export type ThunkDispatch = ReduxThunkDispatch<State, unknown, Action<string>>;
