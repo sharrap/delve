@@ -64,7 +64,9 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
   }, [capsLock, errorOn, focus]);
 
   function updateCapsLock(evt: KeyboardEvent): void {
-    setCapsLock(evt.getModifierState('CapsLock'));
+    if (evt.getModifierState) {
+      setCapsLock(evt.getModifierState('CapsLock'));
+    }
   }
 
   function handleFocus(evt: React.SyntheticEvent): void {
