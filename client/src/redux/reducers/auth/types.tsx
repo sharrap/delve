@@ -15,13 +15,7 @@ interface LogOut {
 
 export type Action = LogIn | LogOut;
 
-interface LoggedIn {
+export interface State {
   authenticated: boolean;
-  user: User;
+  user?: User;
 }
-
-interface LoggedOut {
-  authenticated: boolean;
-}
-
-export type State = LoggedIn | LoggedOut;
