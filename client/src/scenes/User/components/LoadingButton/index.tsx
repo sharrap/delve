@@ -1,15 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { Button, CircularProgress, Grid } from '@material-ui/core';
 
-export default function LoadingButton({
+interface LoadingButtonProps {
+  loading: boolean;
+  disabled: boolean;
+  children: React.ReactNode;
+  spinnerSize: number;
+}
+
+const LoadingButton: React.SFC<LoadingButtonProps> = ({
   loading,
   disabled,
   spinnerSize,
   children,
   ...props
-}) {
+}: LoadingButtonProps) => {
   return (
     <Button {...props} disabled={loading || disabled}>
       <Grid container>
@@ -23,13 +29,6 @@ export default function LoadingButton({
       </Grid>
     </Button>
   );
-}
-
-LoadingButton.propTypes = {
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  children: PropTypes.node,
-  spinnerSize: PropTypes.number,
 };
 
 LoadingButton.defaultProps = {
@@ -38,3 +37,5 @@ LoadingButton.defaultProps = {
   spinnerSize: 15,
   children: null,
 };
+
+export default LoadingButton;
