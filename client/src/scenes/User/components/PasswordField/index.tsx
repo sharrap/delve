@@ -4,6 +4,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  TextFieldProps,
   Tooltip,
 } from '@material-ui/core';
 
@@ -14,26 +15,28 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 
-interface PasswordFieldProps {
-  autoComplete: string;
-  name: string;
-  id: string;
-  label: string;
-  error: boolean;
-  errorTooltip: string;
-  onFocus: (evt: React.SyntheticEvent) => void;
-  onBlur: (evt: React.SyntheticEvent) => void;
+interface PasswordFieldNewProps {
+  autoComplete?: string;
+  name?: string;
+  id?: string;
+  label?: string;
+  error?: boolean;
+  errorTooltip?: string;
+  onFocus?: (evt: React.SyntheticEvent) => void;
+  onBlur?: (evt: React.SyntheticEvent) => void;
 }
 
+type PasswordFieldProps = TextFieldProps & PasswordFieldProps;
+
 const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
-  autoComplete,
-  name,
-  id,
-  label,
-  error,
-  errorTooltip,
-  onFocus,
-  onBlur,
+  autoComplete = 'current-password',
+  name = 'password',
+  id = 'password',
+  label = 'scenes.User.PasswordField.label',
+  error = false,
+  errorTooltip = '',
+  onFocus = (): void => undefined,
+  onBlur = (): void => undefined,
   ...props
 }: PasswordFieldProps) => {
   const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -124,17 +127,6 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
       />
     </Tooltip>
   );
-};
-
-PasswordField.defaultProps = {
-  error: false,
-  errorTooltip: '',
-  label: 'scenes.User.PasswordField.label',
-  id: 'password',
-  name: 'password',
-  autoComplete: 'current-password',
-  onFocus: (): void => undefined,
-  onBlur: (): void => undefined,
 };
 
 export default PasswordField;

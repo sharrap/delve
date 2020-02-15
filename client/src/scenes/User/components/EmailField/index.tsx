@@ -1,30 +1,32 @@
 import React from 'react';
 
-import { TextField, Tooltip } from '@material-ui/core';
+import { TextField, Tooltip, TextFieldProps } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
 import { validate } from 'email-validator';
 
-interface EmailFieldProps {
-  label: string;
-  error: boolean;
-  errorTooltip: string;
-  id: string;
-  name: string;
-  autoComplete: string;
-  onBlur: (evt: React.SyntheticEvent) => void;
-  onFocus: (evt: React.SyntheticEvent) => void;
+interface EmailFieldNewProps {
+  label?: string;
+  error?: boolean;
+  errorTooltip?: string;
+  id?: string;
+  name?: string;
+  autoComplete?: string;
+  onBlur?: (evt: React.SyntheticEvent) => void;
+  onFocus?: (evt: React.SyntheticEvent) => void;
 }
 
+type EmailFieldProps = TextFieldProps & EmailFieldNewProps;
+
 const EmailField: React.FunctionComponent<EmailFieldProps> = ({
-  error,
-  label,
-  errorTooltip,
-  id,
-  name,
-  autoComplete,
-  onBlur,
-  onFocus,
+  error = false,
+  label = 'scenes.User.EmailField.label',
+  errorTooltip = '',
+  id = 'email',
+  name = 'email',
+  autoComplete = 'email',
+  onBlur = (): void => undefined,
+  onFocus = (): void => undefined,
   ...props
 }: EmailFieldProps) => {
   const defaultTooltip = 'scenes.User.EmailField.invalidTooltip';
@@ -43,13 +45,13 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
     }
   }, [error, badEmail, errorTooltip]);
 
-  function handleBlur(evt: React.SyntheticEvent): void {
+  function handleBlur(evt: React.FocusEvent<HTMLInputElement>): void {
     const target = evt.target as HTMLInputElement;
     setBadEmail(!validate(target.value));
     onBlur(evt);
   }
 
-  function handleFocus(evt: React.SyntheticEvent): void {
+  function handleFocus(evt: React.FocusEvent<HTMLInputElement>): void {
     setBadEmail(false);
     onFocus(evt);
   }
@@ -75,17 +77,6 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
       />
     </Tooltip>
   );
-};
-
-EmailField.defaultProps = {
-  error: false,
-  errorTooltip: '',
-  label: 'scenes.User.EmailField.label',
-  id: 'email',
-  name: 'email',
-  autoComplete: 'email',
-  onBlur: (): void => undefined,
-  onFocus: (): void => undefined,
 };
 
 export default EmailField;

@@ -1,12 +1,22 @@
 import { combineReducers } from 'redux';
-import * as auth from './auth';
+import {
+  actions as authActions,
+  reducer as authReducer,
+  Action as _AuthAction,
+  State as _AuthState,
+  User as _AuthUser,
+} from './auth';
 
-export const rootReducer = combineReducers({ auth: auth.reducer });
+export type AuthAction = _AuthAction;
+export type AuthState = _AuthState;
+export type AuthUser = _AuthUser;
+
+export const rootReducer = combineReducers({ auth: authReducer });
 
 export const actions = {
-  auth: auth.actions,
+  auth: authActions,
 };
 
-export const types = {
-  auth: auth.types,
-};
+export interface State {
+  auth: AuthState;
+}
