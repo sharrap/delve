@@ -7,4 +7,4 @@ export interface LoginInfo extends UserInfo {
   rememberMe: boolean;
 }
 
-export type RegisterInfo = LoginInfo;
+export type RegisterInfo = UserInfo;
