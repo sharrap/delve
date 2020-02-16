@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import * as Redux from 'react-redux';
 
 import { Link as RouterLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
-import { actions } from 'src/redux';
+import { actions, AuthUser, RootState, ThunkDispatch } from 'src/redux';
 import routes from 'src/routes';
 
 import {
@@ -22,7 +21,7 @@ import { AccountCircle as AccountIcon } from '@material-ui/icons';
 
 import { useSnackbar } from 'notistack';
 
-function userAvatar(user) {
+function userAvatar(user: AuthUser | undefined): string {
   return user && user.email && user.email !== '' ? user.email[0] : '?';
 }
 
@@ -32,9 +31,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AccountAvatar({ authenticated, user, setAuthenticated }) {
+const AccountAvatar: React.FunctionComponent = () => {
   const classes = useStyles();
-  const buttonRef = React.useRef();
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  const authenticated = Redux.useSelector<RootState, boolean>(
+    state => state.auth.authenticated
+  );
+  const user = Redux.useSelector<RootState, AuthUser | undefined>(
+    state => state.auth.user
+  );
+
+  const dispatch = Redux.useDispatch<ThunkDispatch>();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -50,24 +58,26 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
     }
   }, [authenticated, menuClosing, menuOpen]);
 
-  function checkAuthenticated() {
+  function checkAuthenticated(): void {
     routes.auth
       .loggedIn()
-      .then(resp => setAuthenticated(resp.data))
-      .catch(() => setAuthenticated({ authenticated: false }));
+      .then(resp =>
+        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user })
+      )
+      .catch(() => dispatch({ type: actions.auth.LOG_OUT }));
   }
 
-  function closeMenu() {
+  function closeMenu(): void {
     setMenuOpen(false);
   }
 
-  function tryLogout() {
+  function tryLogout(): void {
     closeMenu();
 
     routes.auth
       .logout()
       .then(() => {
-        setAuthenticated({ authenticated: false });
+        dispatch({ type: actions.auth.LOG_OUT });
         enqueueSnackbar(
           <FormattedMessage id="scenes.User.AccountAvatar.logoutSuccessSnackbar" />,
           { variant: 'success' }
@@ -87,7 +97,7 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
 
   return (
     <React.Fragment>
-      <IconButton ref={buttonRef} onClick={() => setMenuOpen(!menuOpen)}>
+      <IconButton ref={buttonRef} onClick={(): void => setMenuOpen(!menuOpen)}>
         {authenticated ? (
           <Avatar className={classes.avatar}>{userAvatar(user)}</Avatar>
         ) : (
@@ -106,8 +116,8 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
         keepMounted
         open={menuOpen}
         onClose={closeMenu}
-        onExiting={() => setMenuClosing(true)}
-        onExited={() => setMenuClosing(false)}
+        onExiting={(): void => setMenuClosing(true)}
+        onExited={(): void => setMenuClosing(false)}
       >
         {!menuAuthenticated && (
           <MenuItem dense>
@@ -141,38 +151,6 @@ function AccountAvatar({ authenticated, user, setAuthenticated }) {
       </Menu>
     </React.Fragment>
   );
-}
-
-AccountAvatar.defaultProps = {
-  authenticated: false,
-  user: undefined,
-  setAuthenticated: () => undefined,
 };
 
-AccountAvatar.propTypes = {
-  authenticated: PropTypes.bool,
-  user: PropTypes.any,
-  setAuthenticated: PropTypes.func,
-};
-
-function authenticate({ authenticated, user }) {
-  return dispatch =>
-    authenticated
-      ? dispatch({ type: actions.auth.LOG_IN, user: user })
-      : dispatch({ type: actions.auth.LOG_OUT });
-}
-
-function mapStateToProps({ auth }) {
-  return { authenticated: auth.authenticated, user: auth.user };
-}
-
-const actionCreators = {
-  setAuthenticated: authenticate,
-};
-
-const reduxAccountAvatar = connect(
-  mapStateToProps,
-  actionCreators
-)(AccountAvatar);
-
-export default reduxAccountAvatar;
+export default AccountAvatar;

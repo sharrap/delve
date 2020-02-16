@@ -29,7 +29,7 @@ const theme = createMuiTheme({
   },
 });
 
-function Body() {
+const Body: React.SFC<{}> = () => {
   return (
     <Switch>
       <Route path="/generate-hexcrawl">
@@ -49,7 +49,7 @@ function Body() {
       </Route>
     </Switch>
   );
-}
+};
 
 const useStyles = makeStyles(() => ({
   app: {
@@ -60,7 +60,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function App() {
+const App: React.FunctionComponent<{}> = () => {
   const classes = useStyles();
 
   let locale;
@@ -88,6 +88,6 @@ function App() {
       </ThemeProvider>
     </IntlProvider>
   );
-}
+};
 
 export default App;

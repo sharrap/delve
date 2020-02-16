@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import * as Redux from 'react-redux';
 
-import { actions } from 'src/redux';
+import { actions, RootState, ThunkDispatch } from 'src/redux';
 import routes from 'src/routes';
 
 import {
@@ -61,8 +60,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function UnauthenticatedLogin({ confirmLogin }) {
+const UnauthenticatedLogin: React.FunctionComponent = () => {
   const classes = useStyles();
+
+  const dispatch = Redux.useDispatch<ThunkDispatch>();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -76,11 +77,11 @@ function UnauthenticatedLogin({ confirmLogin }) {
 
   const [error, setError] = React.useState('');
 
-  function validatePassword() {
+  function validatePassword(): void {
     setBadPassword(!password);
   }
 
-  async function login(evt) {
+  function login(evt: React.SyntheticEvent): void {
     evt.preventDefault();
 
     setLoading(true);
@@ -96,7 +97,7 @@ function UnauthenticatedLogin({ confirmLogin }) {
           <FormattedMessage id="scenes.User.Login.loginSuccessSnackbar" />,
           { variant: 'success' }
         );
-        confirmLogin(resp.data);
+        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
       })
       .catch(err => {
         setLoading(false);
@@ -106,6 +107,18 @@ function UnauthenticatedLogin({ confirmLogin }) {
           setError('scenes.User.Login.loginFailedAlert');
         }
       });
+  }
+
+  function handleEmailChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+    const target = evt.target as HTMLInputElement;
+    setEmail(target.value);
+  }
+
+  function handlePasswordChange(
+    evt: React.ChangeEvent<HTMLInputElement>
+  ): void {
+    const target = evt.target as HTMLInputElement;
+    setPassword(target.value);
   }
 
   return (
@@ -124,7 +137,7 @@ function UnauthenticatedLogin({ confirmLogin }) {
                 variant="outlined"
                 required
                 fullWidth
-                onChange={evt => setEmail(evt.target.value)}
+                onChange={handleEmailChange}
                 value={email}
               />
             </Grid>
@@ -133,9 +146,9 @@ function UnauthenticatedLogin({ confirmLogin }) {
                 variant="outlined"
                 required
                 fullWidth
-                onChange={evt => setPassword(evt.target.value)}
+                onChange={handlePasswordChange}
                 onBlur={validatePassword}
-                onFocus={() => setBadPassword(false)}
+                onFocus={(): void => setBadPassword(false)}
                 value={password}
                 error={badPassword}
                 errorTooltip="scenes.User.Login.emptyPasswordTooltip"
@@ -189,47 +202,13 @@ function UnauthenticatedLogin({ confirmLogin }) {
       </div>
     </Container>
   );
-}
-
-UnauthenticatedLogin.defaultProps = {
-  confirmLogin: () => undefined,
 };
 
-UnauthenticatedLogin.propTypes = {
-  confirmLogin: PropTypes.func,
-};
-
-function Login({ authenticated, ...props }) {
-  return authenticated ? (
-    <Redirect to="/" />
-  ) : (
-    <UnauthenticatedLogin {...props} />
+const Login: React.FunctionComponent = () => {
+  const authenticated = Redux.useSelector<RootState>(
+    state => state.auth.authenticated
   );
-}
-
-Login.defaultProps = {
-  ...UnauthenticatedLogin.defaultProps,
-  authenticated: false,
+  return authenticated ? <Redirect to="/" /> : <UnauthenticatedLogin />;
 };
 
-Login.propTypes = {
-  ...UnauthenticatedLogin.propTypes,
-  confirmLogin: PropTypes.func,
-  authenticated: PropTypes.bool,
-};
-
-function mapStateToProps({ auth }) {
-  return { authenticated: auth.authenticated };
-}
-
-function login({ user }) {
-  return dispatch => dispatch({ type: actions.auth.LOG_IN, user: user });
-}
-
-const actionCreators = {
-  confirmLogin: login,
-};
-
-const reduxLoginPage = connect(mapStateToProps, actionCreators)(Login);
-
-export default reduxLoginPage;
+export default Login;

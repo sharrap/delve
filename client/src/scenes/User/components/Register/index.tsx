@@ -1,10 +1,9 @@
 /*eslint no-unused-vars: ["error", { "argsIgnorePattern": "barColor" }]*/
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import * as Redux from 'react-redux';
 
-import { actions } from 'src/redux';
+import { actions, RootState, ThunkDispatch } from 'src/redux';
 import routes from 'src/routes';
 
 import {
@@ -12,6 +11,7 @@ import {
   Container,
   Grid,
   LinearProgress,
+  LinearProgressProps,
   Link,
   Tooltip,
   Typography,
@@ -27,6 +27,7 @@ import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
 import LoadingButton from '../LoadingButton';
 
+import { createStyles } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { green, grey, red, yellow } from '@material-ui/core/colors';
@@ -86,14 +87,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const styledBy = (property, mapping) => props => mapping[props[property]];
+type ColoredProgressBarProps = LinearProgressProps & { barColor: string };
 
-const ColoredProgressBar = withStyles({
+const styledBy = (mapping: { [key: string]: string }) => (
+  props: ColoredProgressBarProps
+): string => mapping[props.barColor];
+
+const coloredProgressBarStyles = createStyles({
   colorPrimary: {
     backgroundColor: grey[300],
   },
   barColorPrimary: {
-    backgroundColor: styledBy('barColor', {
+    backgroundColor: styledBy({
       red: red[800],
       yellow: yellow[800],
       green: green[500],
@@ -101,18 +106,34 @@ const ColoredProgressBar = withStyles({
       default: grey[300],
     }),
   },
-})(({ barColor, ...other }) => <LinearProgress {...other} />);
+});
 
-function passwordTooWeak(strength) {
+const ColoredProgressBar = withStyles(
+  coloredProgressBarStyles
+)(({ barColor, ...other }: ColoredProgressBarProps) => (
+  <LinearProgress {...other} />
+));
+
+function passwordTooWeak(strength: number): boolean {
   return strength < 1;
 }
 
-function ColoredProgress(props) {
+interface ColoredProgressProps {
+  strength?: number;
+  warning?: string;
+  suggestions?: Array<string>;
+}
+
+const ColoredProgress: React.FunctionComponent<ColoredProgressProps> = ({
+  strength = 0,
+  warning = '',
+  suggestions = [],
+}: ColoredProgressProps) => {
   const classes = useStyles();
 
   let color, text;
 
-  switch (props.strength) {
+  switch (strength) {
     case 4:
       color = 'darkgreen';
       text = 'scenes.User.Register.passwordExcellent';
@@ -148,8 +169,7 @@ function ColoredProgress(props) {
           <Typography
             align="left"
             variant="caption"
-            fontWeight="bold"
-            color={passwordTooWeak(props.strength) ? 'error' : 'textPrimary'}
+            color={passwordTooWeak(strength) ? 'error' : 'textPrimary'}
             gutterBottom
             className={classes.passwordStrength}
           >
@@ -158,13 +178,13 @@ function ColoredProgress(props) {
         </Grid>
         <Grid item xs={2}>
           <div className={classes.iconContainer}>
-            {props.warning ? (
-              <Tooltip title={props.warning}>
+            {warning ? (
+              <Tooltip title={warning}>
                 <WarningIcon className={classes.warningIcon} />
               </Tooltip>
             ) : null}
-            {props.suggestions && props.suggestions.length ? (
-              <Tooltip title={props.suggestions.join(' ')}>
+            {suggestions && suggestions.length ? (
+              <Tooltip title={suggestions.join(' ')}>
                 <InfoIcon className={classes.infoIcon} />
               </Tooltip>
             ) : null}
@@ -173,21 +193,17 @@ function ColoredProgress(props) {
       </Grid>
       <ColoredProgressBar
         variant="determinate"
-        value={Math.max(props.strength, 0) * 25}
+        value={Math.max(strength, 0) * 25}
         barColor={color}
       />
     </div>
   );
-}
-
-ColoredProgress.propTypes = {
-  strength: PropTypes.number.isRequired,
-  warning: PropTypes.string.isRequired,
-  suggestions: PropTypes.array.isRequired,
 };
 
-function UnauthenticatedRegister({ confirmRegister }) {
+const UnauthenticatedRegister: React.FunctionComponent = () => {
   const classes = useStyles();
+
+  const dispatch = Redux.useDispatch<ThunkDispatch>();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -207,16 +223,17 @@ function UnauthenticatedRegister({ confirmRegister }) {
 
   const [loading, setLoading] = React.useState(false);
 
-  function validatePassword() {
+  function validatePassword(): void {
     setBadPassword(passwordTooWeak(passwordStrength));
   }
 
-  function handleEmailChanged(evt) {
-    setEmail(evt.target.value);
+  function handleEmailChanged(evt: React.ChangeEvent<HTMLInputElement>): void {
+    const target = evt.target as HTMLInputElement;
+    setEmail(target.value);
     setEmailTaken(false);
   }
 
-  async function tryRegister(evt) {
+  function tryRegister(evt: React.SyntheticEvent): void {
     evt.preventDefault();
 
     setLoading(true);
@@ -233,7 +250,7 @@ function UnauthenticatedRegister({ confirmRegister }) {
             variant: 'success',
           }
         );
-        confirmRegister(resp.data);
+        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
       })
       .catch(err => {
         setLoading(false);
@@ -243,6 +260,13 @@ function UnauthenticatedRegister({ confirmRegister }) {
           setRegisterError(true);
         }
       });
+  }
+
+  function handlePasswordChange(
+    evt: React.ChangeEvent<HTMLInputElement>
+  ): void {
+    const target = evt.target as HTMLInputElement;
+    setPassword(target.value);
   }
 
   return (
@@ -272,9 +296,9 @@ function UnauthenticatedRegister({ confirmRegister }) {
                 variant="outlined"
                 required
                 fullWidth
-                onChange={evt => setPassword(evt.target.value)}
+                onChange={handlePasswordChange}
                 onBlur={validatePassword}
-                onFocus={() => setBadPassword(false)}
+                onFocus={(): void => setBadPassword(false)}
                 value={password}
                 error={badPassword}
                 errorTooltip="scenes.User.Register.passwordTooWeakTooltip"
@@ -317,46 +341,13 @@ function UnauthenticatedRegister({ confirmRegister }) {
       </div>
     </Container>
   );
-}
-
-UnauthenticatedRegister.defaultProps = {
-  confirmRegister: () => undefined,
 };
 
-UnauthenticatedRegister.propTypes = {
-  confirmRegister: PropTypes.func,
-};
-
-function Register({ authenticated, ...props }) {
-  return authenticated ? (
-    <Redirect to="/" />
-  ) : (
-    <UnauthenticatedRegister {...props} />
+const Register: React.FunctionComponent = () => {
+  const authenticated = Redux.useSelector<RootState>(
+    state => state.auth.authenticated
   );
-}
-
-Register.defaultProps = {
-  ...UnauthenticatedRegister.defaultProps,
-  authenticated: false,
+  return authenticated ? <Redirect to="/" /> : <UnauthenticatedRegister />;
 };
 
-Register.propTypes = {
-  ...UnauthenticatedRegister.propTypes,
-  authenticated: PropTypes.bool,
-};
-
-function mapStateToProps({ auth }) {
-  return { authenticated: auth.authenticated };
-}
-
-function register({ user }) {
-  return dispatch => dispatch({ type: actions.auth.LOG_IN, user: user });
-}
-
-const actionCreators = {
-  confirmRegister: register,
-};
-
-const reduxRegisterPage = connect(mapStateToProps, actionCreators)(Register);
-
-export default reduxRegisterPage;
+export default Register;

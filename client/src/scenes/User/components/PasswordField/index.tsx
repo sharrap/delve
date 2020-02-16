@@ -1,10 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import {
   IconButton,
   InputAdornment,
   TextField,
+  TextFieldProps,
   Tooltip,
 } from '@material-ui/core';
 
@@ -15,17 +15,30 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 
-export default function PasswordField({
-  autoComplete,
-  name,
-  id,
-  label,
-  error,
-  errorTooltip,
-  onFocus,
-  onBlur,
+interface PasswordFieldNewProps {
+  autoComplete?: string;
+  name?: string;
+  id?: string;
+  label?: string;
+  error?: boolean;
+  errorTooltip?: string;
+  onFocus?: (evt: React.SyntheticEvent) => void;
+  onBlur?: (evt: React.SyntheticEvent) => void;
+}
+
+type PasswordFieldProps = TextFieldProps & PasswordFieldNewProps;
+
+const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
+  autoComplete = 'current-password',
+  name = 'password',
+  id = 'password',
+  label = 'scenes.User.PasswordField.label',
+  error = false,
+  errorTooltip = '',
+  onFocus = (): void => undefined,
+  onBlur = (): void => undefined,
   ...props
-}) {
+}: PasswordFieldProps) => {
   const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   const [capsLock, setCapsLock] = React.useState(false);
@@ -50,16 +63,18 @@ export default function PasswordField({
     }
   }, [capsLock, errorOn, focus]);
 
-  function updateCapsLock(evt) {
-    setCapsLock(evt.getModifierState('CapsLock'));
+  function updateCapsLock(evt: KeyboardEvent): void {
+    if (evt.getModifierState) {
+      setCapsLock(evt.getModifierState('CapsLock'));
+    }
   }
 
-  function handleFocus(evt) {
+  function handleFocus(evt: React.SyntheticEvent): void {
     setFocus(true);
     onFocus(evt);
   }
 
-  function handleBlur(evt) {
+  function handleBlur(evt: React.SyntheticEvent): void {
     setFocus(false);
     onBlur(evt);
   }
@@ -70,7 +85,7 @@ export default function PasswordField({
     // other keys being pressed when caps lock is on.
     window.addEventListener('keydown', updateCapsLock);
     window.addEventListener('keyup', updateCapsLock);
-    return () => {
+    return (): void => {
       window.removeEventListener('keydown', updateCapsLock);
       window.removeEventListener('keyup', updateCapsLock);
     };
@@ -104,7 +119,7 @@ export default function PasswordField({
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={() => setPasswordVisible(!passwordVisible)}
+                onClick={(): void => setPasswordVisible(!passwordVisible)}
               >
                 {passwordVisible ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
               </IconButton>
@@ -114,26 +129,6 @@ export default function PasswordField({
       />
     </Tooltip>
   );
-}
-
-PasswordField.propTypes = {
-  error: PropTypes.bool,
-  errorTooltip: PropTypes.string,
-  label: PropTypes.string,
-  id: PropTypes.string,
-  name: PropTypes.string,
-  autoComplete: PropTypes.string,
-  onFocus: PropTypes.func,
-  onBlur: PropTypes.func,
 };
 
-PasswordField.defaultProps = {
-  error: false,
-  errorTooltip: '',
-  label: 'scenes.User.PasswordField.label',
-  id: 'password',
-  name: 'password',
-  autoComplete: 'current-password',
-  onFocus: () => undefined,
-  onBlur: () => undefined,
-};
+export default PasswordField;

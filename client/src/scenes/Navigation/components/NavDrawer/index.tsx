@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Drawer,
@@ -26,7 +25,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function NavDrawer({ open, onClose }) {
+interface NavDrawerProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const NavDrawer: React.FunctionComponent<NavDrawerProps> = ({
+  open,
+  onClose,
+}: NavDrawerProps) => {
   const classes = useStyles();
 
   return (
@@ -58,14 +65,11 @@ export default function NavDrawer({ open, onClose }) {
       </List>
     </Drawer>
   );
-}
+};
 
 NavDrawer.defaultProps = {
   open: false,
-  onClose: () => undefined,
+  onClose: (): void => undefined,
 };
 
-NavDrawer.propTypes = {
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
-};
+export default NavDrawer;

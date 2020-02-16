@@ -8,7 +8,7 @@ import { ReactComponent as HexGrid } from './hex.svg';
 
 import { FormattedMessage } from 'react-intl';
 
-export default function Home() {
+const Home: React.FunctionComponent<{}> = () => {
   return (
     <div className="Home">
       <HexGrid />
@@ -17,4 +17,6 @@ export default function Home() {
       </Typography>
     </div>
   );
-}
+};
+
+export default Home;

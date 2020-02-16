@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Navigation() {
+const Navigation: React.FunctionComponent<{}> = () => {
   const classes = useStyles();
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -31,7 +31,7 @@ export default function Navigation() {
           color="inherit"
           aria-label="menu"
           className={classes.menuIcon}
-          onClick={() => setDrawerOpen(true)}
+          onClick={(): void => setDrawerOpen(true)}
         >
           <MenuIcon />
         </IconButton>
@@ -39,8 +39,13 @@ export default function Navigation() {
           <FormattedMessage id="scenes.Navigation.title" />
         </Typography>
         <AccountAvatar />
-        <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+        <NavDrawer
+          open={drawerOpen}
+          onClose={(): void => setDrawerOpen(false)}
+        />
       </Toolbar>
     </AppBar>
   );
-}
+};
+
+export default Navigation;
