@@ -21,7 +21,7 @@ interface PasswordFieldNewProps {
   id?: string;
   label?: string;
   error?: boolean;
-  errorTooltip?: string;
+  errorTooltip?: React.ReactNode;
   onFocus?: (evt: React.SyntheticEvent) => void;
   onBlur?: (evt: React.SyntheticEvent) => void;
 }
@@ -44,7 +44,9 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
   const [capsLock, setCapsLock] = React.useState(false);
   const [focus, setFocus] = React.useState(false);
 
-  const capsLockTooltip = 'scenes.User.PasswordField.capsLockTooltip';
+  const capsLockTooltip = (
+    <FormattedMessage id="scenes.User.PasswordField.capsLockTooltip" />
+  );
 
   const [displayCapsLockTooltip, setDisplayCapsLockTooltip] = React.useState(
     false
@@ -63,12 +65,6 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
     }
   }, [capsLock, errorOn, focus]);
 
-  function updateCapsLock(evt: KeyboardEvent): void {
-    if (evt.getModifierState) {
-      setCapsLock(evt.getModifierState('CapsLock'));
-    }
-  }
-
   function handleFocus(evt: React.SyntheticEvent): void {
     setFocus(true);
     onFocus(evt);
@@ -80,23 +76,41 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
   }
 
   React.useEffect(() => {
+    function updateCapsLock(evt: KeyboardEvent): boolean | null {
+      const IS_MAC = /Mac/.test(navigator.platform);
+
+      const charCode = evt.charCode;
+      const shiftKey = evt.shiftKey;
+
+      if (charCode >= 97 && charCode <= 122) {
+        return shiftKey;
+      } else if (charCode >= 65 && charCode <= 90 && !(shiftKey && IS_MAC)) {
+        return !shiftKey;
+      }
+
+      return null;
+    }
+
+    function handleKeyPress(evt: KeyboardEvent): void {
+      const newValue = updateCapsLock(evt);
+      if (newValue || newValue === false) setCapsLock(newValue);
+    }
+
     // The caps lock key itself registers as down when enabled and up when
     // disabled, so we need to check both to catch both that key and any
     // other keys being pressed when caps lock is on.
-    window.addEventListener('keydown', updateCapsLock);
-    window.addEventListener('keyup', updateCapsLock);
+    window.addEventListener('keypress', handleKeyPress);
     return (): void => {
-      window.removeEventListener('keydown', updateCapsLock);
-      window.removeEventListener('keyup', updateCapsLock);
+      window.removeEventListener('keypress', handleKeyPress);
     };
   }, []);
 
   return (
     <Tooltip
       title={
-        <FormattedMessage
-          id={displayCapsLockTooltip ? capsLockTooltip : errorTooltip}
-        />
+        <span data-testid="password-field-error-tooltip">
+          {(!displayCapsLockTooltip && errorTooltip) || capsLockTooltip}
+        </span>
       }
       disableHoverListener
       disableFocusListener
@@ -106,6 +120,7 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
     >
       <TextField
         {...props}
+        data-testid="password-field"
         id={id}
         name={name}
         autoComplete={autoComplete}
@@ -115,13 +130,19 @@ const PasswordField: React.FunctionComponent<PasswordFieldProps> = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         InputProps={{
+          inputProps: { 'data-testid': 'password-field-input' },
           endAdornment: (
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
+                data-testid="password-field-visibility-button"
                 onClick={(): void => setPasswordVisible(!passwordVisible)}
               >
-                {passwordVisible ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
+                {passwordVisible ? (
+                  <VisibilityOnIcon data-testid="password-field-visibility-on" />
+                ) : (
+                  <VisibilityOffIcon data-testid="password-field-visibility-off" />
+                )}
               </IconButton>
             </InputAdornment>
           ),

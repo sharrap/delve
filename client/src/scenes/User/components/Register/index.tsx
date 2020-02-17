@@ -301,7 +301,9 @@ const UnauthenticatedRegister: React.FunctionComponent = () => {
                 onFocus={(): void => setBadPassword(false)}
                 value={password}
                 error={badPassword}
-                errorTooltip="scenes.User.Register.passwordTooWeakTooltip"
+                errorTooltip={
+                  <FormattedMessage id="scenes.User.Register.passwordTooWeakTooltip" />
+                }
               />
             </Grid>
             <Grid item xs={12}>

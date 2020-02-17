@@ -151,7 +151,9 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
                 onFocus={(): void => setBadPassword(false)}
                 value={password}
                 error={badPassword}
-                errorTooltip="scenes.User.Login.emptyPasswordTooltip"
+                errorTooltip={
+                  <FormattedMessage id="scenes.User.Login.emptyPasswordTooltip" />
+                }
               />
             </Grid>
           </Grid>
@@ -163,7 +165,7 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
                     id="rememberMe"
                     color="primary"
                     value={rememberMe}
-                    onClick={() => setRememberMe(!rememberMe)}
+                    onClick={(): void => setRememberMe(!rememberMe)}
                   />
                 }
                 label={
