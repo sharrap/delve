@@ -47,7 +47,7 @@ const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
   }
 
   return (
-    <Menu {...props}>
+    <Menu data-testid="account-menu" {...props}>
       {!authenticated && (
         <MenuItem dense>
           <ListItem

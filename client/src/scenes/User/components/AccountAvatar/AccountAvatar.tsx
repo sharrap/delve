@@ -66,7 +66,11 @@ const AccountAvatar: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <IconButton ref={buttonRef} onClick={(): void => setMenuOpen(!menuOpen)}>
+      <IconButton
+        data-testid="account-avatar-button"
+        ref={buttonRef}
+        onClick={(): void => setMenuOpen(!menuOpen)}
+      >
         {authenticated ? (
           <Avatar className={classes.avatar}>{userAvatar(user)}</Avatar>
         ) : (
