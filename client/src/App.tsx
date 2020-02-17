@@ -5,9 +5,7 @@ import { IntlProvider } from 'react-intl';
 import { SnackbarProvider } from 'notistack';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-
-import { purple, red } from '@material-ui/core/colors';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
@@ -19,15 +17,7 @@ import messages from './locale';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: red,
-    // background: {
-    //   paper: grey[500]
-    // }
-  },
-});
+import { light } from 'src/theme';
 
 const Body: React.SFC<{}> = () => {
   return (
@@ -74,7 +64,7 @@ const App: React.FunctionComponent<{}> = () => {
 
   return (
     <IntlProvider locale={locale} messages={messages[locale]}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={light}>
         <ReduxProvider store={reduxStore}>
           <SnackbarProvider maxSnack={3}>
             <Router>
