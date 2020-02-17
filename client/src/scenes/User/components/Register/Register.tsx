@@ -251,7 +251,7 @@ const UnauthenticatedRegister: React.FunctionComponent<UnauthenticatedRegisterPr
     setLoading(true);
     register({ email: email, password: password }).catch(err => {
       setLoading(false);
-      if (err === 'email-taken') {
+      if (err.message === 'email-taken') {
         setEmailTaken(true);
       } else {
         setRegisterError(true);
@@ -270,9 +270,9 @@ const UnauthenticatedRegister: React.FunctionComponent<UnauthenticatedRegisterPr
     <Container data-testid="register-container" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <LockOutlinedIcon data-testid="register-lock-icon" />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography data-testid="register-title" component="h1" variant="h5">
           <FormattedMessage id="scenes.User.Register.title" />
         </Typography>
         <form className={classes.form} noValidate onSubmit={tryRegister}>
@@ -328,14 +328,23 @@ const UnauthenticatedRegister: React.FunctionComponent<UnauthenticatedRegisterPr
           <Grid container>
             <Grid item xs />
             <Grid item>
-              <Link component={RouterLink} to="/login" variant="body2">
+              <Link
+                data-testid="register-login-link"
+                component={RouterLink}
+                to="/login"
+                variant="body2"
+              >
                 <FormattedMessage id="scenes.User.Register.loginLink" />
               </Link>
             </Grid>
           </Grid>
         </form>
         {registerError && (
-          <Alert severity="error" className={classes.loginError}>
+          <Alert
+            data-testid="register-alert"
+            severity="error"
+            className={classes.loginError}
+          >
             <FormattedMessage id="scenes.User.Register.registerFailedAlert" />
           </Alert>
         )}
