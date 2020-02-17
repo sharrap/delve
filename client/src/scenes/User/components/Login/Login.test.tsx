@@ -61,7 +61,7 @@ describe('<Login/>', () => {
 
     initializeURL();
     act(() => userEvent.click(dom.queryByTestId('login-register-link')));
-    wait(() => expect(URL()).toEqual('/register'));
+    await wait(() => expect(URL()).toEqual('/register'));
   });
 
   it('Should submit accurate form values with rememberMe', async () => {

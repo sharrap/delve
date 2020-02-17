@@ -4,7 +4,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { MemoryRouter, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { AuthenticationProvider } from 'src/components/AuthenticationProvider';
 
 import { store as reduxStore } from './redux';
@@ -23,17 +23,6 @@ interface AppProviderProps {
   children: React.ReactNode;
 }
 
-const Router: React.FunctionComponent<RouterProps> = ({
-  mock,
-  children,
-}: RouterProps) => {
-  return mock ? (
-    <MemoryRouter>{children}</MemoryRouter>
-  ) : (
-    <BrowserRouter>{children}</BrowserRouter>
-  );
-};
-
 const AppProviders: React.FunctionComponent<AppProviderProps> = ({
   locale = 'en',
   maxNotifications = 1,
@@ -48,7 +37,7 @@ const AppProviders: React.FunctionComponent<AppProviderProps> = ({
         <ReduxProvider store={reduxStore}>
           <SnackbarProvider maxSnack={maxNotifications}>
             <AuthenticationProvider mock={mock}>
-              <Router mock={mock}>{children}</Router>
+              <BrowserRouter>{children}</BrowserRouter>
             </AuthenticationProvider>
           </SnackbarProvider>
         </ReduxProvider>

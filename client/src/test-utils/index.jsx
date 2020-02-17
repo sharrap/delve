@@ -1,14 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ThemeProvider } from '@material-ui/core';
-import { MemoryRouter } from 'react-router-dom';
-import { IntlProvider } from 'react-intl';
-import { Provider as ReduxProvider } from 'react-redux';
-import { SnackbarProvider } from 'notistack';
 
 import messages from 'src/locale';
-import { light } from 'src/theme';
-import { store as reduxStore } from 'src/redux';
 
 import { prettyDOM } from '@testing-library/dom';
 
