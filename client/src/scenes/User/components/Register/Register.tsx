@@ -37,6 +37,8 @@ import {
   useAuthentication,
 } from 'src/components/AuthenticationProvider';
 
+import { RegisterInfo, User } from 'src/types/auth';
+
 const useStyles = makeStyles(theme => ({
   form: {
     marginTop: theme.spacing(1),
@@ -194,10 +196,15 @@ const ColoredProgress: React.FunctionComponent<ColoredProgressProps> = ({
   );
 };
 
-const UnauthenticatedRegister: React.FunctionComponent = () => {
-  const classes = useStyles();
+interface UnauthenticatedRegisterProps {
+  register?: (info: RegisterInfo) => Promise<User>;
+}
 
-  const { register } = useAuthentication();
+const UnauthenticatedRegister: React.FunctionComponent<UnauthenticatedRegisterProps> = ({
+  register = ({ email }): Promise<User> =>
+    new Promise(resolve => resolve({ email: email })),
+}: UnauthenticatedRegisterProps) => {
+  const classes = useStyles();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -324,9 +331,26 @@ const UnauthenticatedRegister: React.FunctionComponent = () => {
   );
 };
 
-const Register: React.FunctionComponent = () => {
-  const authenticated = useAuthenticated();
-  return authenticated ? <Redirect to="/" /> : <UnauthenticatedRegister />;
+type RegisterProps = UnauthenticatedRegisterProps & {
+  authenticated?: boolean;
 };
 
-export default Register;
+export const Register: React.FunctionComponent<RegisterProps> = ({
+  authenticated = false,
+  ...props
+}: RegisterProps) => {
+  return authenticated ? (
+    <Redirect to="/" />
+  ) : (
+    <UnauthenticatedRegister {...props} />
+  );
+};
+
+const ConnectedRegister: React.FunctionComponent = () => {
+  const { register } = useAuthentication();
+  const authenticated = useAuthenticated();
+
+  return <Register authenticated={authenticated} register={register} />;
+};
+
+export default ConnectedRegister;
