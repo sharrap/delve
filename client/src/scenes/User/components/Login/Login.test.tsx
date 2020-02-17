@@ -4,11 +4,13 @@ import { Login } from './Login';
 
 import {
   act,
+  initializeURL,
   messagePrefix,
   queryByText,
   render,
   screen,
   userEvent,
+  URL,
   wait,
 } from 'src/test-utils';
 
@@ -22,11 +24,11 @@ describe('<Login/>', () => {
   });
 
   it('Should render a redirect if authenticated', () => {
+    initializeURL();
     const dom = render(<Login authenticated={true} />);
 
-    global.window = { location: { pathname: null } };
     expect(dom.queryByTestId('login-container')).not.toBeInTheDocument();
-    expect(global.window.location.pathname).toEqual('/');
+    expect(URL()).toEqual('/');
   });
 
   it('Should render all form fields', () => {
@@ -57,9 +59,9 @@ describe('<Login/>', () => {
     expect(dom.queryByTestId('login-register-link')).toBeInTheDocument();
     expect(dom.queryByText(message('registerLink'))).toBeInTheDocument();
 
-    global.window = { location: { pathname: null } };
+    initializeURL();
     act(() => userEvent.click(dom.queryByTestId('login-register-link')));
-    wait(() => expect(global.window.location.pathname).toEqual('/register'));
+    wait(() => expect(URL()).toEqual('/register'));
   });
 
   it('Should submit accurate form values with rememberMe', async () => {

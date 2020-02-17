@@ -45,3 +45,12 @@ export function messagePrefix(prefix) {
 export function printDOM() {
   console.log(prettyDOM(document.body));
 }
+
+// For testing React-Router redirects etc
+export function initializeURL() {
+  global.window = { location: { pathname: null } };
+}
+
+export function URL() {
+  return global.window.location.pathname;
+}
