@@ -18,6 +18,10 @@ interface EmailFieldNewProps {
 
 type EmailFieldProps = TextFieldProps & EmailFieldNewProps;
 
+const defaultTooltip = (
+  <FormattedMessage id="scenes.User.EmailField.invalidTooltip" />
+);
+
 const EmailField: React.FunctionComponent<EmailFieldProps> = ({
   error = false,
   label = 'scenes.User.EmailField.label',
@@ -29,7 +33,6 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
   onFocus = (): void => undefined,
   ...props
 }: EmailFieldProps) => {
-  const defaultTooltip = 'scenes.User.EmailField.invalidTooltip';
   const [badEmail, setBadEmail] = React.useState(false);
   const [tooltip, setTooltip] = React.useState<React.ReactNode>(defaultTooltip);
 
