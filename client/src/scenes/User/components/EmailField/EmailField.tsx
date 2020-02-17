@@ -61,7 +61,7 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
 
   return (
     <Tooltip
-      title={tooltip}
+      title={<span data-testid="email-field-error-tooltip">{tooltip}</span>}
       disableHoverListener
       disableFocusListener
       disableTouchListener
@@ -77,6 +77,11 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
         error={errorOn}
         onBlur={handleBlur}
         onFocus={handleFocus}
+        InputProps={{
+          inputProps: {
+            'data-testid': 'email-field-input',
+          },
+        }}
       />
     </Tooltip>
   );
