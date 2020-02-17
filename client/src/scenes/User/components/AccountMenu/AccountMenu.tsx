@@ -62,7 +62,9 @@ const ConnectedAccountMenu: React.FunctionComponent<ConnectedAccountMenuProps> =
   return (
     <AccountMenu
       {...props}
-      logout={(): void => logout().catch(() => undefined)}
+      logout={(): void => {
+        logout().catch(() => undefined);
+      }}
     />
   );
 };
