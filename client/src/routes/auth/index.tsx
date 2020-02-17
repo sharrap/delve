@@ -1,4 +1,4 @@
-import * as types from './types';
-export * from './routes';
+import * as rest from './routes';
+import mock from './mock';
 
-export { types };
+export { rest, mock };

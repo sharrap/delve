@@ -13,9 +13,9 @@ export default function(AuthToken, User) {
     if (req.isAuthenticated()) {
       return res
         .status(200)
-        .send({ authenticated: true, user: userBody(req.user) });
+        .send({ user: userBody(req.user) });
     } else {
-      return res.status(200).send({ authenticated: false });
+      return res.status(401).send();
     }
   });
   router.post('/signout', (req, res) => {
