@@ -2,14 +2,7 @@ import React from 'react';
 // Unconnected component
 import { AccountAvatar, PresentationAccountAvatar } from './AccountAvatar';
 
-import {
-  act,
-  messagePrefix,
-  render,
-  screen,
-  wait,
-  waitForElement,
-} from 'src/test-utils';
+import { act, render, wait } from 'src/test-utils';
 import userEvent from '@testing-library/user-event';
 
 describe('<AccountAvatar/>', () => {
