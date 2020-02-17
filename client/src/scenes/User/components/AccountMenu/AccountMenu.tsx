@@ -29,7 +29,7 @@ const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
   return (
     <Menu data-testid="account-menu" {...props}>
       {!authenticated && (
-        <MenuItem dense>
+        <MenuItem data-testid="login-menu-item" dense>
           <ListItem
             dense
             component={RouterLink}
@@ -41,7 +41,7 @@ const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
         </MenuItem>
       )}
       {!authenticated && (
-        <MenuItem dense>
+        <MenuItem data-testid="register-menu-item" dense>
           <ListItem
             dense
             component={RouterLink}
@@ -53,7 +53,7 @@ const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
         </MenuItem>
       )}
       {authenticated && (
-        <MenuItem dense onClick={tryLogout}>
+        <MenuItem data-testid="logout-menu-item" dense onClick={tryLogout}>
           <FormattedMessage id="scenes.User.AccountMenu.logoutMenuItem" />
         </MenuItem>
       )}
