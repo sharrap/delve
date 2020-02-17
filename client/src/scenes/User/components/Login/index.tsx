@@ -1,8 +1,4 @@
 import React from 'react';
-import * as Redux from 'react-redux';
-
-import { actions, RootState, ThunkDispatch } from 'src/redux';
-import routes from 'src/routes';
 
 import {
   Avatar,
@@ -13,12 +9,10 @@ import {
   Link,
   Typography,
 } from '@material-ui/core';
-
 import { Alert } from '@material-ui/lab';
-
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-
 import { FormattedMessage } from 'react-intl';
+import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 
 import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
@@ -26,11 +20,12 @@ import LoadingButton from '../LoadingButton';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
-
 import { validate } from 'email-validator';
 
-import { useSnackbar } from 'notistack';
+import {
+  useAuthenticated,
+  useAuthentication,
+} from 'src/components/AuthenticationProvider';
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -63,9 +58,7 @@ const useStyles = makeStyles(theme => ({
 const UnauthenticatedLogin: React.FunctionComponent = () => {
   const classes = useStyles();
 
-  const dispatch = Redux.useDispatch<ThunkDispatch>();
-
-  const { enqueueSnackbar } = useSnackbar();
+  const { login } = useAuthentication();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -81,32 +74,20 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
     setBadPassword(!password);
   }
 
-  function login(evt: React.SyntheticEvent): void {
+  function tryLogin(evt: React.SyntheticEvent): void {
     evt.preventDefault();
 
     setLoading(true);
-    routes.auth
-      .login({
-        email: email,
-        password: password,
-        rememberMe: rememberMe,
-      })
-      .then(resp => {
+    login({ email: email, password: password, rememberMe: rememberMe }).catch(
+      err => {
         setLoading(false);
-        enqueueSnackbar(
-          <FormattedMessage id="scenes.User.Login.loginSuccessSnackbar" />,
-          { variant: 'success' }
-        );
-        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
-      })
-      .catch(err => {
-        setLoading(false);
-        if (err.response && err.response.status === 403) {
+        if (err === 'login-failed') {
           setError('scenes.User.Login.loginRejectedAlert');
         } else {
           setError('scenes.User.Login.loginFailedAlert');
         }
-      });
+      }
+    );
   }
 
   function handleEmailChange(evt: React.ChangeEvent<HTMLInputElement>): void {
@@ -130,7 +111,7 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
         <Typography component="h1" variant="h5">
           <FormattedMessage id="scenes.User.Login.title" />
         </Typography>
-        <form className={classes.form} noValidate onSubmit={login}>
+        <form className={classes.form} noValidate onSubmit={tryLogin}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <EmailField
@@ -207,9 +188,7 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
 };
 
 const Login: React.FunctionComponent = () => {
-  const authenticated = Redux.useSelector<RootState>(
-    state => state.auth.authenticated
-  );
+  const authenticated = useAuthenticated();
   return authenticated ? <Redirect to="/" /> : <UnauthenticatedLogin />;
 };
 

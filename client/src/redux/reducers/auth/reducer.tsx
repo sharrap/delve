@@ -1,5 +1,5 @@
 import { actions } from './actions';
-import { Action, State } from './types';
+import { Action, State } from 'src/types/auth';
 
 export default function reduce(
   state: State = { authenticated: false },

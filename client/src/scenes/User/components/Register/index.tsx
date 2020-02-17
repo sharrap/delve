@@ -1,10 +1,6 @@
 /*eslint no-unused-vars: ["error", { "argsIgnorePattern": "barColor" }]*/
 
 import React from 'react';
-import * as Redux from 'react-redux';
-
-import { actions, RootState, ThunkDispatch } from 'src/redux';
-import routes from 'src/routes';
 
 import {
   Avatar,
@@ -16,12 +12,14 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-
 import { Alert } from '@material-ui/lab';
-
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-
 import { FormattedMessage } from 'react-intl';
+import {
+  Info as InfoIcon,
+  LockOutlined as LockOutlinedIcon,
+  Warning as WarningIcon,
+} from '@material-ui/icons';
 
 import EmailField from '../EmailField';
 import PasswordField from '../PasswordField';
@@ -29,19 +27,15 @@ import LoadingButton from '../LoadingButton';
 
 import { createStyles } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-
 import { green, grey, red, yellow } from '@material-ui/core/colors';
-
-import {
-  Info as InfoIcon,
-  LockOutlined as LockOutlinedIcon,
-  Warning as WarningIcon,
-} from '@material-ui/icons';
 
 import { validate } from 'email-validator';
 import zxcvbn from 'zxcvbn';
 
-import { useSnackbar } from 'notistack';
+import {
+  useAuthenticated,
+  useAuthentication,
+} from 'src/components/AuthenticationProvider';
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -203,9 +197,7 @@ const ColoredProgress: React.FunctionComponent<ColoredProgressProps> = ({
 const UnauthenticatedRegister: React.FunctionComponent = () => {
   const classes = useStyles();
 
-  const dispatch = Redux.useDispatch<ThunkDispatch>();
-
-  const { enqueueSnackbar } = useSnackbar();
+  const { register } = useAuthentication();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -237,29 +229,14 @@ const UnauthenticatedRegister: React.FunctionComponent = () => {
     evt.preventDefault();
 
     setLoading(true);
-    routes.auth
-      .register({
-        email: email,
-        password: password,
-      })
-      .then(resp => {
-        setLoading(false);
-        enqueueSnackbar(
-          <FormattedMessage id="scenes.User.Register.registerSuccessSnackbar" />,
-          {
-            variant: 'success',
-          }
-        );
-        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
-      })
-      .catch(err => {
-        setLoading(false);
-        if (err.response && err.response.status === 409) {
-          setEmailTaken(true);
-        } else {
-          setRegisterError(true);
-        }
-      });
+    register({ email: email, password: password }).catch(err => {
+      setLoading(false);
+      if (err === 'email-taken') {
+        setEmailTaken(true);
+      } else {
+        setRegisterError(true);
+      }
+    });
   }
 
   function handlePasswordChange(
@@ -348,9 +325,7 @@ const UnauthenticatedRegister: React.FunctionComponent = () => {
 };
 
 const Register: React.FunctionComponent = () => {
-  const authenticated = Redux.useSelector<RootState>(
-    state => state.auth.authenticated
-  );
+  const authenticated = useAuthenticated();
   return authenticated ? <Redirect to="/" /> : <UnauthenticatedRegister />;
 };
 

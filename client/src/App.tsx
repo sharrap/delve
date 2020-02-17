@@ -9,9 +9,17 @@ import { Login, Register } from './scenes/User';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { useAuthentication } from 'src/components/AuthenticationProvider';
+
 import AppProviders from './AppProviders';
 
 const Body: React.SFC<{}> = () => {
+  const { loggedIn } = useAuthentication();
+
+  React.useEffect(() => {
+    loggedIn().catch(() => undefined);
+  }, [loggedIn]);
+
   return (
     <Switch>
       <Route path="/generate-hexcrawl">

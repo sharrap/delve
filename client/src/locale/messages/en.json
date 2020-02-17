@@ -1,6 +1,13 @@
 {
-  "notifications.Auth.logoutFailed": "Sorry, we could not sign you out at this time.",
+  "notifications.Auth.loggedInSuccess": "Successfully restored your session.",
+  "notifications.Auth.loginError": "Sorry, we could not sign you in at this time.",
+  "notifications.Auth.loginFail": "Failed to sign in: incorrect email or password.",
+  "notifications.Auth.loginSuccess": "Successfully signed in.",
+  "notifications.Auth.logoutError": "Sorry, we could not sign you out at this time.",
   "notifications.Auth.logoutSuccess": "Successfully signed out.",
+  "notifications.Auth.registerError": "Sorry, we could not register your account at this time.",
+  "notifications.Auth.registerFail": "Failed to register: that email is already registered.",
+  "notifications.Auth.registerSuccess": "Successfully registered and signed in.",
   "scenes.Home.title": "Delve",
   "scenes.Navigation.title": "Delve",
   "scenes.Navigation.NavDrawer.home": "Home",
@@ -14,7 +21,6 @@
   "scenes.User.Login.loginButton": "Sign In",
   "scenes.User.Login.loginFailedAlert": "Sorry, we can't log you in at this time.",
   "scenes.User.Login.loginRejectedAlert": "Unrecognized email or password.",
-  "scenes.User.Login.loginSuccessSnackbar": "Successfully signed in.",
   "scenes.User.Login.registerLink": "Don't have an account? Sign up",
   "scenes.User.Login.rememberMeCheckbox": "Stay signed in",
   "scenes.User.Login.title": "Sign In",
@@ -32,6 +38,5 @@
   "scenes.User.Register.passwordTooWeakTooltip": "Password strength must be at least 'Weak'.",
   "scenes.User.Register.registerButton": "Sign Up",
   "scenes.User.Register.registerFailedAlert": "Sorry, we can't sign you up at this time.",
-  "scenes.User.Register.registerSuccessSnackbar": "Successfully registered and signed in.",
   "scenes.User.Register.title": "Sign Up"
 }

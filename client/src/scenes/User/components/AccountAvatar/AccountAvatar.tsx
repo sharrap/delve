@@ -1,16 +1,18 @@
 import React from 'react';
-import * as Redux from 'react-redux';
 
 import { Avatar, IconButton } from '@material-ui/core';
 import { AccountCircle as AccountIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 import AccountMenu from '../AccountMenu';
+import {
+  useAuthenticated,
+  useUser,
+} from 'src/components/AuthenticationProvider';
 
-import { actions, AuthUser, RootState, ThunkDispatch } from 'src/redux';
-import routes from 'src/routes';
+import { User } from 'src/types/auth';
 
-function userAvatar(user: AuthUser | undefined): string {
+function userAvatar(user: User | null): string {
   return user && user.email && user.email !== '' ? user.email[0] : '?';
 }
 
@@ -24,14 +26,8 @@ const AccountAvatar: React.FunctionComponent = () => {
   const classes = useStyles();
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
-  const authenticated = Redux.useSelector<RootState, boolean>(
-    state => state.auth.authenticated
-  );
-  const user = Redux.useSelector<RootState, AuthUser | undefined>(
-    state => state.auth.user
-  );
-
-  const dispatch = Redux.useDispatch<ThunkDispatch>();
+  const authenticated = useAuthenticated();
+  const user = useUser();
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -45,24 +41,9 @@ const AccountAvatar: React.FunctionComponent = () => {
     }
   }, [authenticated, menuClosing]);
 
-  function checkAuthenticated(): void {
-    routes.auth
-      .loggedIn()
-      .then(resp => {
-        if (resp.data.authenticated) {
-          dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
-        } else {
-          dispatch({ type: actions.auth.LOG_OUT });
-        }
-      })
-      .catch(() => dispatch({ type: actions.auth.LOG_OUT }));
-  }
-
   function closeMenu(): void {
     setMenuOpen(false);
   }
-
-  React.useEffect(checkAuthenticated, []);
 
   return (
     <React.Fragment>

@@ -5,6 +5,7 @@ import { IntlProvider } from 'react-intl';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { MemoryRouter, BrowserRouter } from 'react-router-dom';
+import { AuthenticationProvider } from 'src/components/AuthenticationProvider';
 
 import { store as reduxStore } from './redux';
 import messages from './locale';
@@ -46,7 +47,9 @@ const AppProviders: React.FunctionComponent<AppProviderProps> = ({
       <ThemeProvider theme={light}>
         <ReduxProvider store={reduxStore}>
           <SnackbarProvider maxSnack={maxNotifications}>
-            <Router mock={mock}>{children}</Router>
+            <AuthenticationProvider mock={mock}>
+              <Router mock={mock}>{children}</Router>
+            </AuthenticationProvider>
           </SnackbarProvider>
         </ReduxProvider>
       </ThemeProvider>
