@@ -15,7 +15,7 @@ export default function(AuthToken, User) {
         .status(200)
         .send({ user: userBody(req.user) });
     } else {
-      return res.status(200).send();
+      return res.status(401).send();
     }
   });
   router.post('/signout', (req, res) => {
