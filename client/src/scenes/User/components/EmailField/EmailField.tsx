@@ -31,7 +31,7 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
 }: EmailFieldProps) => {
   const defaultTooltip = 'scenes.User.EmailField.invalidTooltip';
   const [badEmail, setBadEmail] = React.useState(false);
-  const [tooltip, setTooltip] = React.useState(defaultTooltip);
+  const [tooltip, setTooltip] = React.useState<React.ReactNode>(defaultTooltip);
 
   const errorOn = error || badEmail;
   const displayTooltip = errorOn && tooltip !== '';
