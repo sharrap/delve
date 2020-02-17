@@ -48,9 +48,13 @@ const AccountAvatar: React.FunctionComponent = () => {
   function checkAuthenticated(): void {
     routes.auth
       .loggedIn()
-      .then(resp =>
-        dispatch({ type: actions.auth.LOG_IN, user: resp.data.user })
-      )
+      .then(resp => {
+        if (resp.data.authenticated) {
+          dispatch({ type: actions.auth.LOG_IN, user: resp.data.user });
+        } else {
+          dispatch({ type: actions.auth.LOG_OUT });
+        }
+      })
       .catch(() => dispatch({ type: actions.auth.LOG_OUT }));
   }
 
