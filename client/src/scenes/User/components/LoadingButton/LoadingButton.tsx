@@ -19,14 +19,23 @@ const LoadingButton: React.SFC<LoadingButtonProps> = ({
   ...props
 }: LoadingButtonProps) => {
   return (
-    <Button {...props} disabled={loading || disabled}>
+    <Button
+      data-testid="loading-button"
+      {...props}
+      disabled={loading || disabled}
+    >
       <Grid container>
         <Grid item xs={1} />
         <Grid item xs={10}>
           {children}
         </Grid>
         <Grid item xs={1}>
-          {loading && <CircularProgress size={spinnerSize} />}
+          {loading && (
+            <CircularProgress
+              data-testid="loading-button-spinner"
+              size={spinnerSize}
+            />
+          )}
         </Grid>
       </Grid>
     </Button>
