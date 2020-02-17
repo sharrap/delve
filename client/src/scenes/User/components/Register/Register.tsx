@@ -201,8 +201,8 @@ interface UnauthenticatedRegisterProps {
 }
 
 const UnauthenticatedRegister: React.FunctionComponent<UnauthenticatedRegisterProps> = ({
-  register = ({ email }): Promise<User> =>
-    new Promise(resolve => resolve({ email: email })),
+  register = (): Promise<User> =>
+    new Promise((_, reject) => reject(new Error('crash'))),
 }: UnauthenticatedRegisterProps) => {
   const classes = useStyles();
 

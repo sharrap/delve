@@ -62,8 +62,8 @@ interface UnauthenticatedLoginProps {
 }
 
 const UnauthenticatedLogin: React.FunctionComponent<UnauthenticatedLoginProps> = ({
-  login = ({ email }): Promise<User> =>
-    new Promise(resolve => resolve({ email: email })),
+  login = (): Promise<User> =>
+    new Promise((_, reject) => reject(new Error('crash'))),
 }: UnauthenticatedLoginProps) => {
   const classes = useStyles();
 
