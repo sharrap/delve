@@ -8,7 +8,7 @@ import { validate } from 'email-validator';
 interface EmailFieldNewProps {
   label?: string;
   error?: boolean;
-  errorTooltip?: string;
+  errorTooltip?: React.ReactNode;
   id?: string;
   name?: string;
   autoComplete?: string;
@@ -58,7 +58,7 @@ const EmailField: React.FunctionComponent<EmailFieldProps> = ({
 
   return (
     <Tooltip
-      title={<FormattedMessage id={tooltip} />}
+      title={tooltip}
       disableHoverListener
       disableFocusListener
       disableTouchListener

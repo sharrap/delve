@@ -288,7 +288,9 @@ const UnauthenticatedRegister: React.FunctionComponent = () => {
                 onChange={handleEmailChanged}
                 value={email}
                 error={emailTaken}
-                errorTooltip="scenes.User.Register.emailTakenTooltip"
+                errorTooltip={
+                  <FormattedMessage id="scenes.User.Register.emailTakenTooltip" />
+                }
               />
             </Grid>
             <Grid item xs={12}>
