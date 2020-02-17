@@ -136,6 +136,8 @@ export const AuthenticationProvider: React.FunctionComponent<AuthenticationProvi
       snackbar('loggedInSuccess', 'success');
     }
 
+    dispatch({ type: actions.auth.LOG_IN, user: user });
+
     return user;
   }
 
