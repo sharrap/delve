@@ -4,6 +4,7 @@ import { ThemeProvider } from '@material-ui/core';
 import { MemoryRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Provider as ReduxProvider } from 'react-redux';
+import { SnackbarProvider } from 'notistack';
 
 import messages from 'src/locale';
 import { light } from 'src/theme';
@@ -14,7 +15,9 @@ const AllProviders = ({ children }) => {
     <ThemeProvider theme={light}>
       <ReduxProvider store={reduxStore}>
         <IntlProvider locale="en" messages={messages['en']}>
-          <MemoryRouter>{children}</MemoryRouter>
+          <SnackbarProvider maxSnack={3}>
+            <MemoryRouter>{children}</MemoryRouter>
+          </SnackbarProvider>
         </IntlProvider>
       </ReduxProvider>
     </ThemeProvider>
