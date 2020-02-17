@@ -159,10 +159,16 @@ const ColoredProgress: React.FunctionComponent<ColoredProgressProps> = ({
     <div className={classes.progressContainer}>
       <Grid container spacing={2}>
         <Grid item xs={10}>
-          <Typography align="left" variant="caption" gutterBottom>
-            <FormattedMessage id="scenes.User.Register.passwordStrength" />
+          <Typography
+            data-testid="register-password-strength-label"
+            align="left"
+            variant="caption"
+            gutterBottom
+          >
+            <FormattedMessage id="scenes.User.Register.passwordStrength" />{' '}
           </Typography>
           <Typography
+            data-testid="register-password-strength"
             align="left"
             variant="caption"
             color={passwordTooWeak(strength) ? 'error' : 'textPrimary'}
@@ -176,18 +182,25 @@ const ColoredProgress: React.FunctionComponent<ColoredProgressProps> = ({
           <div className={classes.iconContainer}>
             {warning ? (
               <Tooltip title={warning}>
-                <WarningIcon className={classes.warningIcon} />
+                <WarningIcon
+                  data-testid="register-password-strength-warning"
+                  className={classes.warningIcon}
+                />
               </Tooltip>
             ) : null}
             {suggestions && suggestions.length ? (
               <Tooltip title={suggestions.join(' ')}>
-                <InfoIcon className={classes.infoIcon} />
+                <InfoIcon
+                  data-testid="register-password-strength-info"
+                  className={classes.infoIcon}
+                />
               </Tooltip>
             ) : null}
           </div>
         </Grid>
       </Grid>
       <ColoredProgressBar
+        data-testid="register-password-strength-bar"
         variant="determinate"
         value={Math.max(strength, 0) * 25}
         barColor={color}
@@ -254,7 +267,7 @@ const UnauthenticatedRegister: React.FunctionComponent<UnauthenticatedRegisterPr
   }
 
   return (
-    <Container maxWidth="xs">
+    <Container data-testid="register-container" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />

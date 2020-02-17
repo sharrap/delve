@@ -30,7 +30,7 @@
   "scenes.User.Register.loginLink": "Already have an account? Sign in",
   "scenes.User.Register.passwordDecent": "Decent",
   "scenes.User.Register.passwordExcellent": "Excellent",
-  "scenes.User.Register.passwordStrength": "Password Strength ",
+  "scenes.User.Register.passwordStrength": "Password Strength:",
   "scenes.User.Register.passwordStrong": "Strong",
   "scenes.User.Register.passwordTooWeak": "Too Weak",
   "scenes.User.Register.passwordUnknown": "Unknown",
