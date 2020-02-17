@@ -27,6 +27,8 @@ import {
   useAuthentication,
 } from 'src/components/AuthenticationProvider';
 
+import { LoginInfo, User } from 'src/types/auth';
+
 const useStyles = makeStyles(theme => ({
   form: {
     marginTop: theme.spacing(1),
@@ -55,10 +57,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const UnauthenticatedLogin: React.FunctionComponent = () => {
-  const classes = useStyles();
+interface UnauthenticatedLoginProps {
+  login?: (info: LoginInfo) => Promise<User>;
+}
 
-  const { login } = useAuthentication();
+const UnauthenticatedLogin: React.FunctionComponent<UnauthenticatedLoginProps> = ({
+  login = ({ email }): Promise<User> =>
+    new Promise(resolve => resolve({ email: email })),
+}: UnauthenticatedLoginProps) => {
+  const classes = useStyles();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -81,7 +88,7 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
     login({ email: email, password: password, rememberMe: rememberMe }).catch(
       err => {
         setLoading(false);
-        if (err === 'login-failed') {
+        if (err.message === 'login-failed') {
           setError('scenes.User.Login.loginRejectedAlert');
         } else {
           setError('scenes.User.Login.loginFailedAlert');
@@ -103,12 +110,12 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
   }
 
   return (
-    <Container maxWidth="xs">
+    <Container data-testid="login-container" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <LockOutlinedIcon data-testid="login-lock-icon" />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography data-testid="login-title" component="h1" variant="h5">
           <FormattedMessage id="scenes.User.Login.title" />
         </Typography>
         <form className={classes.form} noValidate onSubmit={tryLogin}>
@@ -143,6 +150,7 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
               <FormControlLabel
                 control={
                   <Checkbox
+                    data-testid="remember-me-checkbox"
                     id="rememberMe"
                     color="primary"
                     value={rememberMe}
@@ -171,14 +179,23 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
           <Grid container>
             <Grid item xs />
             <Grid item>
-              <Link component={RouterLink} to="/register" variant="body2">
+              <Link
+                data-testid="login-register-link"
+                component={RouterLink}
+                to="/register"
+                variant="body2"
+              >
                 <FormattedMessage id="scenes.User.Login.registerLink" />
               </Link>
             </Grid>
           </Grid>
         </form>
         {error !== '' && (
-          <Alert severity="error" className={classes.loginError}>
+          <Alert
+            data-testid="login-alert"
+            severity="error"
+            className={classes.loginError}
+          >
             <FormattedMessage id={error} />
           </Alert>
         )}
@@ -187,9 +204,26 @@ const UnauthenticatedLogin: React.FunctionComponent = () => {
   );
 };
 
-const Login: React.FunctionComponent = () => {
-  const authenticated = useAuthenticated();
-  return authenticated ? <Redirect to="/" /> : <UnauthenticatedLogin />;
+interface LoginProps extends UnauthenticatedLoginProps {
+  authenticated?: boolean;
+}
+
+export const Login: React.FunctionComponent<LoginProps> = ({
+  authenticated = false,
+  ...props
+}: LoginProps) => {
+  return authenticated ? (
+    <Redirect to="/" />
+  ) : (
+    <UnauthenticatedLogin {...props} />
+  );
 };
 
-export default Login;
+const ConnectedLogin: React.FunctionComponent = () => {
+  const authenticated = useAuthenticated();
+  const { login } = useAuthentication();
+
+  return <Login authenticated={authenticated} login={login} />;
+};
+
+export default ConnectedLogin;
