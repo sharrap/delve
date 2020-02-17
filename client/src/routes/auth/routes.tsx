@@ -7,7 +7,7 @@ export async function loggedIn(): Promise<User> {
 
     if (resp.data && resp.data.user) return resp.data.user;
   } catch (err) {
-    if (err.response && err.response.status === 403) {
+    if (err.response && err.response.status === 401) {
       throw new Error('auto-login-failed');
     }
     console.log(err);
@@ -39,7 +39,7 @@ export async function login({
 
     if (resp.data && resp.data.user) return resp.data.user;
   } catch (err) {
-    if (err.response && err.response.status === 403) {
+    if (err.response && err.response.status === 401) {
       throw new Error('login-failed');
     }
     console.log(err);

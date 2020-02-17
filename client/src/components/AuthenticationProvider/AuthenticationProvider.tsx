@@ -69,7 +69,9 @@ export const AuthenticationProvider: React.FunctionComponent<AuthenticationProvi
     } catch (err) {
       dispatch({ type: actions.auth.LOG_OUT });
 
-      if (err.reason === 'login-failed') {
+      console.log('err', err);
+
+      if (err.message === 'login-failed') {
         message = 'loginFail';
       }
 
@@ -96,7 +98,7 @@ export const AuthenticationProvider: React.FunctionComponent<AuthenticationProvi
     } catch (err) {
       dispatch({ type: actions.auth.LOG_OUT });
 
-      if (err.reason === 'email-taken') {
+      if (err.message === 'email-taken') {
         message = 'registerFail';
       }
 
