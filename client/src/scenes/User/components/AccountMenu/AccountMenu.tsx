@@ -29,25 +29,15 @@ const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
   return (
     <Menu data-testid="account-menu" {...props}>
       {!authenticated && (
-        <MenuItem data-testid="login-menu-item" dense>
-          <ListItem
-            dense
-            component={RouterLink}
-            to="/login"
-            onClick={onItemClick}
-          >
+        <MenuItem data-testid="login-menu-item" dense onClick={onItemClick}>
+          <ListItem dense component={RouterLink} to="/login">
             <FormattedMessage id="scenes.User.AccountMenu.loginMenuItem" />
           </ListItem>
         </MenuItem>
       )}
       {!authenticated && (
-        <MenuItem data-testid="register-menu-item" dense>
-          <ListItem
-            dense
-            component={RouterLink}
-            to="/register"
-            onClick={onItemClick}
-          >
+        <MenuItem data-testid="register-menu-item" dense onClick={onItemClick}>
+          <ListItem dense component={RouterLink} to="/register">
             <FormattedMessage id="scenes.User.AccountMenu.registerMenuItem" />
           </ListItem>
         </MenuItem>
