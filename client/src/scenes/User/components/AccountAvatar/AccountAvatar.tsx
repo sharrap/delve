@@ -1,25 +1,14 @@
 import React from 'react';
 import * as Redux from 'react-redux';
 
-import { Link as RouterLink } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { Avatar, IconButton } from '@material-ui/core';
+import { AccountCircle as AccountIcon } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
+
+import AccountMenu from '../AccountMenu';
 
 import { actions, AuthUser, RootState, ThunkDispatch } from 'src/redux';
 import routes from 'src/routes';
-
-import {
-  Avatar,
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItem,
-} from '@material-ui/core';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-import { AccountCircle as AccountIcon } from '@material-ui/icons';
-
-import { useSnackbar } from 'notistack';
 
 function userAvatar(user: AuthUser | undefined): string {
   return user && user.email && user.email !== '' ? user.email[0] : '?';
@@ -44,8 +33,6 @@ const AccountAvatar: React.FunctionComponent = () => {
 
   const dispatch = Redux.useDispatch<ThunkDispatch>();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   // Prevent menu from re-rendering while closing
@@ -53,10 +40,10 @@ const AccountAvatar: React.FunctionComponent = () => {
   const [menuClosing, setMenuClosing] = React.useState(false);
 
   React.useEffect(() => {
-    if (!menuClosing && !menuOpen) {
+    if (!menuClosing) {
       setMenuAuthenticated(authenticated);
     }
-  }, [authenticated, menuClosing, menuOpen]);
+  }, [authenticated, menuClosing]);
 
   function checkAuthenticated(): void {
     routes.auth
@@ -69,28 +56,6 @@ const AccountAvatar: React.FunctionComponent = () => {
 
   function closeMenu(): void {
     setMenuOpen(false);
-  }
-
-  function tryLogout(): void {
-    closeMenu();
-
-    routes.auth
-      .logout()
-      .then(() => {
-        dispatch({ type: actions.auth.LOG_OUT });
-        enqueueSnackbar(
-          <FormattedMessage id="scenes.User.AccountAvatar.logoutSuccessSnackbar" />,
-          { variant: 'success' }
-        );
-      })
-      .catch(() =>
-        enqueueSnackbar(
-          <FormattedMessage id="scenes.User.AccountAvatar.logoutFailedSnackbar" />,
-          {
-            variant: 'error',
-          }
-        )
-      );
   }
 
   React.useEffect(checkAuthenticated, []);
@@ -106,7 +71,8 @@ const AccountAvatar: React.FunctionComponent = () => {
           </Avatar>
         )}
       </IconButton>
-      <Menu
+      <AccountMenu
+        authenticated={menuAuthenticated}
         anchorEl={buttonRef.current}
         anchorOrigin={{
           vertical: 'bottom',
@@ -115,40 +81,11 @@ const AccountAvatar: React.FunctionComponent = () => {
         getContentAnchorEl={null}
         keepMounted
         open={menuOpen}
+        onItemClick={closeMenu}
         onClose={closeMenu}
         onExiting={(): void => setMenuClosing(true)}
         onExited={(): void => setMenuClosing(false)}
-      >
-        {!menuAuthenticated && (
-          <MenuItem dense>
-            <ListItem
-              dense
-              component={RouterLink}
-              to="/login"
-              onClick={closeMenu}
-            >
-              <FormattedMessage id="scenes.User.AccountAvatar.loginMenuItem" />
-            </ListItem>
-          </MenuItem>
-        )}
-        {!menuAuthenticated && (
-          <MenuItem dense>
-            <ListItem
-              dense
-              component={RouterLink}
-              to="/register"
-              onClick={closeMenu}
-            >
-              <FormattedMessage id="scenes.User.AccountAvatar.registerMenuItem" />
-            </ListItem>
-          </MenuItem>
-        )}
-        {menuAuthenticated && (
-          <MenuItem dense onClick={tryLogout}>
-            <FormattedMessage id="scenes.User.AccountAvatar.logoutMenuItem" />
-          </MenuItem>
-        )}
-      </Menu>
+      />
     </React.Fragment>
   );
 };
