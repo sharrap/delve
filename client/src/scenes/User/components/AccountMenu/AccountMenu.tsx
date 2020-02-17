@@ -6,24 +6,27 @@ import { Menu, MenuProps, MenuItem, ListItem } from '@material-ui/core';
 
 import { useAuthentication } from 'src/components/AuthenticationProvider';
 
-interface AccountMenuNewProps {
+interface ConnectedAccountMenuNewProps {
   authenticated?: boolean;
   onItemClick?: (evt: React.MouseEvent) => void;
 }
 
-type AccountMenuProps = MenuProps & AccountMenuNewProps;
+type ConnectedAccountMenuProps = MenuProps & ConnectedAccountMenuNewProps;
 
-const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
+export type AccountMenuProps = ConnectedAccountMenuProps & {
+  logout?: () => void;
+};
+
+export const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
   authenticated = false,
   onItemClick = (): void => undefined,
+  logout = (): void => undefined,
   ...props
 }: AccountMenuProps) => {
-  const { logout } = useAuthentication();
-
   function tryLogout(evt: React.MouseEvent): void {
     onItemClick(evt);
 
-    logout().catch(() => undefined);
+    logout();
   }
 
   return (
@@ -51,4 +54,17 @@ const AccountMenu: React.FunctionComponent<AccountMenuProps> = ({
   );
 };
 
-export default AccountMenu;
+const ConnectedAccountMenu: React.FunctionComponent<ConnectedAccountMenuProps> = (
+  props: ConnectedAccountMenuProps
+) => {
+  const { logout } = useAuthentication();
+
+  return (
+    <AccountMenu
+      {...props}
+      logout={(): void => logout().catch(() => undefined)}
+    />
+  );
+};
+
+export default ConnectedAccountMenu;
