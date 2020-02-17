@@ -30,8 +30,8 @@ export function useAuthenticated(): boolean {
   return useSelector(state => state.auth.authenticated);
 }
 
-export function useUser(): User | null {
-  return useSelector(state => state.auth.user) || null;
+export function useUser(): User | undefined {
+  return useSelector(state => state.auth.user);
 }
 
 export function useAuthentication(): Authentication {
