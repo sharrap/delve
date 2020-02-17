@@ -10,7 +10,11 @@ import messages from 'src/locale';
 import { light } from 'src/theme';
 import { store as reduxStore } from 'src/redux';
 
+import { prettyDOM } from '@testing-library/dom';
+
 import AppProviders from '../AppProviders';
+
+import userEvent from '@testing-library/user-event';
 
 function AllProviders({ children }) {
   return <AppProviders mock>{children}</AppProviders>;
@@ -30,10 +34,14 @@ global.document.createRange = () => ({
 });
 
 export * from '@testing-library/react';
-export { renderWithProviders as render };
+export { renderWithProviders as render, userEvent };
 export function message(str) {
   return messages['en'][str];
 }
 export function messagePrefix(prefix) {
   return str => message(prefix + '.' + str);
+}
+
+export function printDOM() {
+  console.log(prettyDOM(document.body));
 }
