@@ -1,23 +1,15 @@
 import React from 'react';
 
-import { Provider as ReduxProvider } from 'react-redux';
-import { IntlProvider } from 'react-intl';
-import { SnackbarProvider } from 'notistack';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
-import { ThemeProvider } from '@material-ui/core/styles';
+import { Route, Switch } from 'react-router-dom';
 
 import Home from './scenes/Home';
 import { Hexcrawl, HexcrawlGenerator } from './scenes/Hexcrawl';
 import Navigation from './scenes/Navigation';
 import { Login, Register } from './scenes/User';
 
-import { store as reduxStore } from './redux';
-import messages from './locale';
-
 import { makeStyles } from '@material-ui/core/styles';
 
-import { light } from 'src/theme';
+import AppProviders from './AppProviders';
 
 const Body: React.SFC<{}> = () => {
   return (
@@ -60,23 +52,13 @@ const App: React.FunctionComponent<{}> = () => {
     console.log('Could not determine locale', err);
   }
 
-  if (!locale || locale === '' || !messages[locale]) locale = 'en';
-
   return (
-    <IntlProvider locale={locale} messages={messages[locale]}>
-      <ThemeProvider theme={light}>
-        <ReduxProvider store={reduxStore}>
-          <SnackbarProvider maxSnack={3}>
-            <Router>
-              <div className={classes.app}>
-                <Navigation />
-                <Body />
-              </div>
-            </Router>
-          </SnackbarProvider>
-        </ReduxProvider>
-      </ThemeProvider>
-    </IntlProvider>
+    <AppProviders locale={locale} maxNotifications={3}>
+      <div className={classes.app}>
+        <Navigation />
+        <Body />
+      </div>
+    </AppProviders>
   );
 };
 

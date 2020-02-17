@@ -10,19 +10,11 @@ import messages from 'src/locale';
 import { light } from 'src/theme';
 import { store as reduxStore } from 'src/redux';
 
-const AllProviders = ({ children }) => {
-  return (
-    <ThemeProvider theme={light}>
-      <ReduxProvider store={reduxStore}>
-        <IntlProvider locale="en" messages={messages['en']}>
-          <SnackbarProvider maxSnack={3}>
-            <MemoryRouter>{children}</MemoryRouter>
-          </SnackbarProvider>
-        </IntlProvider>
-      </ReduxProvider>
-    </ThemeProvider>
-  );
-};
+import AppProviders from '../AppProviders';
+
+function AllProviders({ children }) {
+  return <AppProviders mock>{children}</AppProviders>;
+}
 
 const renderWithProviders = (component, options) =>
   render(component, { wrapper: AllProviders, ...options });
