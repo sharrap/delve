@@ -69,8 +69,6 @@ export const AuthenticationProvider: React.FunctionComponent<AuthenticationProvi
     } catch (err) {
       dispatch({ type: actions.auth.LOG_OUT });
 
-      console.log('err', err);
-
       if (err.message === 'login-failed') {
         message = 'loginFail';
       }
