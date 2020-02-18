@@ -6,53 +6,57 @@ interface MockAuthType {
   loggedIn(): Promise<User>;
   logout(): Promise<undefined>;
 
-  next: Promise<User>;
-  nextLogout: Promise<undefined>;
+  next(): Promise<User>;
+  nextLogout(): Promise<undefined>;
 }
 
 class MockAuth implements MockAuthType {
-  next: Promise<User> = new Promise(resolve =>
-    resolve({ email: 'test@test.com' })
-  );
-  nextLogout: Promise<undefined> = new Promise(resolve => resolve());
+  next: () => Promise<User> = () =>
+    new Promise(resolve => resolve({ email: 'test@test.com' }));
+  nextLogout: () => Promise<undefined> = () =>
+    new Promise(resolve => resolve());
   constructor() {
     this.loggedIn = this.loggedIn.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.register = this.register.bind(this);
     this.resolveNext = this.resolveNext.bind(this);
+    this.resolveNextUser = this.resolveNextUser.bind(this);
     this.rejectNext = this.rejectNext.bind(this);
 
     return this;
   }
 
   resolveNext(): void {
-    this.nextLogout = new Promise(resolve => resolve(undefined));
+    this.nextLogout = (): Promise<undefined> =>
+      new Promise(resolve => resolve(undefined));
   }
 
   resolveNextUser(user: User): void {
-    this.next = new Promise(resolve => resolve(user));
+    this.next = (): Promise<User> => new Promise(resolve => resolve(user));
   }
 
   rejectNext(reason: string): void {
-    this.next = new Promise((_, reject) => reject(reason));
-    this.nextLogout = new Promise((_, reject) => reject(reason));
+    this.next = (): Promise<User> =>
+      new Promise((_, reject) => reject(new Error(reason)));
+    this.nextLogout = (): Promise<undefined> =>
+      new Promise((_, reject) => reject(new Error(reason)));
   }
 
   loggedIn(): Promise<User> {
-    return this.next;
+    return this.next();
   }
 
   login(info: LoginInfo): Promise<User> {
-    return this.next;
+    return this.next();
   }
 
   logout(): Promise<undefined> {
-    return this.nextLogout;
+    return this.nextLogout();
   }
 
   register(info: RegisterInfo): Promise<User> {
-    return this.next;
+    return this.next();
   }
 }
 
