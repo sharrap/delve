@@ -18,7 +18,7 @@ exports.up = function(db, callback) {
   db.createTable(
     'users',
     {
-      id: {
+      user_id: {
         type: 'int',
         autoIncrement: true,
         notNull: true,

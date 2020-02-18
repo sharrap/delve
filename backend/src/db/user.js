@@ -4,7 +4,7 @@ export default function(db, passwordConfig) {
       throw new Error('Unrecognized number of rows');
     }
     return {
-      id: parseInt(res.rows[0]['id']),
+      id: parseInt(res.rows[0]['user_id']),
       email: res.rows[0]['email'],
       hashedPassword: res.rows[0]['hashed_password'],
     };
@@ -12,9 +12,9 @@ export default function(db, passwordConfig) {
 
   async function getById(id) {
     const res = await db.query(
-      'SELECT id, email \
+      'SELECT user_id, email \
        FROM users \
-       WHERE id = $1::integer;',
+       WHERE user_id = $1::integer;',
       [id]
     );
     return user(res);
@@ -23,7 +23,7 @@ export default function(db, passwordConfig) {
   async function getByEmail(email) {
     const lcEmail = (email || '').toLowerCase();
     const res = await db.query(
-      'SELECT id, email \
+      'SELECT user_id, email \
        FROM users \
        WHERE email = $1::text;',
       [lcEmail]
@@ -34,7 +34,7 @@ export default function(db, passwordConfig) {
   async function getWithPasswordByEmail(email) {
     const lcEmail = (email || '').toLowerCase();
     const res = await db.query(
-      'SELECT id, email, hashed_password \
+      'SELECT user_id, email, hashed_password \
        FROM users \
        WHERE email = $1::text;',
       [lcEmail]
@@ -47,7 +47,7 @@ export default function(db, passwordConfig) {
 
     await db.query(
       'UPDATE users SET hashed_password = $2::text \
-      WHERE id = $1',
+      WHERE user_id = $1',
       [id, hash.toString().replace(/\0+$/g, '')]
     );
   }
@@ -68,7 +68,7 @@ export default function(db, passwordConfig) {
     const result = await db.query(
       'INSERT INTO users (email, hashed_password) \
            VALUES ($1::text, $2::text) \
-           RETURNING id, email;',
+           RETURNING user_id, email;',
       [lcEmail, hash.toString().replace(/\0+$/g, '')]
     );
 

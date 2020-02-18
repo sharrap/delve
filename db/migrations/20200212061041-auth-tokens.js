@@ -18,7 +18,7 @@ exports.up = function(db, callback) {
   db.createTable(
     'auth_tokens',
     {
-      id: {
+      auth_token_id: {
         type: 'int',
         autoIncrement: true,
         notNull: true,
@@ -46,7 +46,7 @@ exports.up = function(db, callback) {
             onUpdate: 'RESTRICT',
           },
           mapping: {
-            user_id: 'id',
+            user_id: 'user_id',
           },
         },
       },
