@@ -10,7 +10,7 @@
     "@material-ui/styles": "^4.9.0",
     "@material-ui/system": "4.9.1",
     "@svgr/webpack": "^5.1.0",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "email-validator": "^2.0.4",
     "install": "^0.13.0",
     "mdi-material-ui": "^6.11.0",
